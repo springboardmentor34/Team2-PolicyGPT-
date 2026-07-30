@@ -37,14 +37,24 @@ SessionLocal = sessionmaker(
     bind=engine
 )
 
+<<<<<<< Updated upstream
 # Base class for all SQLAlchemy models
 Base = declarative_base()
 
 
 # Dependency to get DB session
+=======
+# Dependency
+>>>>>>> Stashed changes
 def get_db():
     db = SessionLocal()
     try:
         yield db
     finally:
+<<<<<<< Updated upstream
         db.close()
+=======
+        db.close()
+
+
+>>>>>>> Stashed changes
