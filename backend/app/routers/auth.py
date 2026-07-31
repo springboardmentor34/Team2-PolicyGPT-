@@ -53,3 +53,17 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
         "access_token": token,
         "token_type": "bearer"
     }
+
+
+@router.get("/users")
+def get_all_users(db: Session = Depends(get_db)):
+    from app.models.user import User
+    users = db.query(User).all()
+    return [
+        {
+            "id": u.id,
+            "full_name": u.full_name,
+            "email": u.email
+        }
+        for u in users
+    ]
