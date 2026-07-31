@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolicyGPT - National Portal for Public Schemes & Policies</title>
+    <meta name="description" content="Official Login and Registration Portal for PolicyGPT - Government Policy & Public Scheme Intelligence Platform">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;500;600;700&family=Poppins:wght@500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&family=Noto+Sans+Telugu:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <!-- 1. Top Government Accessibility Header -->
+    <div class="gov-top-bar">
+        <div class="gov-container flex-between">
+            <div class="gov-identity">
+                <span class="flag-icon">🇮🇳</span>
+                <span class="gov-title">भारत सरकार | Government of India</span>
+            </div>
+            <div class="gov-accessibility">
+                <div class="font-sizer">
+                    <button onclick="changeFontSize(-1)" title="Decrease font size">A-</button>
+                    <button onclick="changeFontSize(0)" title="Normal font size">A</button>
+                    <button onclick="changeFontSize(1)" title="Increase font size">A+</button>
+                </div>
+                <span class="divider">|</span>
+                <button class="lang-toggle" onclick="toggleLanguage()" id="lang-btn">हिंदी</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. Main Header & Banner -->
+    <header class="main-header">
+        <div class="gov-container header-wrapper">
+            <div class="logo-area">
+                <!-- Ashoka Emblem SVG -->
+                <div class="emblem-container">
+                    <svg viewBox="0 0 100 100" class="emblem-svg">
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#0b3c5d" stroke-width="4"/>
+                        <circle cx="50" cy="50" r="38" fill="none" stroke="#d9b310" stroke-width="2"/>
+                        <!-- Ashoka Chakra Spokes -->
+                        <g stroke="#0b3c5d" stroke-width="1.5">
+                            <line x1="50" y1="12" x2="50" y2="88"/>
+                            <line x1="12" y1="50" x2="88" y2="50"/>
+                            <line x1="23" y1="23" x2="77" y2="77"/>
+                            <line x1="23" y1="77" x2="77" y2="23"/>
+                        </g>
+                        <circle cx="50" cy="50" r="8" fill="#0b3c5d"/>
+                    </svg>
+                </div>
+                <div class="brand-titles">
+                    <h1 class="portal-title" id="txt-title">नीतिजीपीटी <span>| PolicyGPT</span></h1>
+                    <p class="portal-subtitle" id="txt-subtitle">Government Policy & Public Scheme Intelligence Platform</p>
+                </div>
+            </div>
+            <div class="header-badges">
+                <div class="badge-item">
+                    <span class="badge-icon">🏛️</span>
+                    <span class="badge-text">National Public Scheme Portal</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 3. Indian Flag Tricolor Bar -->
+    <div class="tricolor-bar">
+        <div class="saffron"></div>
+        <div class="white"></div>
+        <div class="green"></div>
+    </div>
+
+    <!-- 4. Breadcrumb Navigation -->
+    <div class="breadcrumb-bar">
+        <div class="gov-container">
+            <span class="breadcrumb-item"><a href="/">Home</a></span>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-item"><a href="/schemes">Public Schemes</a></span>
+            <span class="breadcrumb-sep">›</span>
+            <span class="breadcrumb-item active" id="txt-breadcrumb">Citizen Access Portal</span>
+        </div>
+    </div>
+
+    <!-- 5. Main Content Area -->
+    <main class="main-content">
+        <div class="gov-container">
+            <div class="portal-grid">
+                
+                <!-- Left Column: Information Panel -->
+                <div class="info-panel">
+                    <div class="info-card">
+                        <h3 class="info-header">
+                            <span class="icon">📢</span> 
+                            <span id="txt-info-title">Welcome to PolicyGPT Portal</span>
+                        </h3>
+                        <p class="info-body" id="txt-info-desc">
+                            Access unified information on Central & State Government Welfare Schemes, eligibility rules, and policy insights powered by AI.
+                        </p>
+                        <ul class="feature-list">
+                            <li>✓ Instant Scheme Eligibility Analysis</li>
+                            <li>✓ Central & State Policy Information</li>
+                            <li>✓ Transparent Citizen Services</li>
+                            <li>✓ Secure Multi-Factor Authentication</li>
+                        </ul>
+                        <div class="helpline-box">
+                            <span class="helpline-title">National Helpline Desk</span>
+                            <span class="helpline-number">📞 1800-111-555 (Toll Free)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Login / Register Form Card -->
+                <div class="auth-wrapper">
+                    <div class="auth-box">
+                        <div class="auth-header-bar">
+                            <span class="security-badge">🔒 Official Citizen Login</span>
+                        </div>
+
+                        <!-- Tab Selection -->
+                        <div class="auth-tabs">
+                            <button class="tab-item active" id="tab-login" onclick="switchTab('login')">
+                                <span class="tab-icon">🔑</span> Sign In
+                            </button>
+                            <button class="tab-item" id="tab-register" onclick="switchTab('register')">
+                                <span class="tab-icon">📝</span> Register
+                            </button>
+                        </div>
+
+                        <!-- Login Form -->
+                        <form id="login-form" class="auth-form-body active" onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label for="login-email">Registered Email ID <span class="required">*</span></label>
+                                <input type="email" id="login-email" required placeholder="example@gov.in / name@domain.com" autocomplete="email">
+                                <small class="input-hint">Enter your registered email address</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="login-password">Password <span class="required">*</span></label>
+                                <input type="password" id="login-password" required placeholder="Enter password" autocomplete="current-password">
+                            </div>
+
+                            <button type="submit" class="gov-btn-primary" id="login-submit-btn">
+                                <span class="btn-label">Sign In to Account</span>
+                                <span class="btn-spinner"></span>
+                            </button>
+                        </form>
+
+                        <!-- Register Form -->
+                        <form id="register-form" class="auth-form-body" onsubmit="handleRegister(event)">
+                            <div class="form-group">
+                                <label for="register-name">Full Name <span class="required">*</span></label>
+                                <input type="text" id="register-name" required placeholder="As per official ID" autocomplete="name">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="register-email">Email Address <span class="required">*</span></label>
+                                <input type="email" id="register-email" required placeholder="name@domain.com" autocomplete="email">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="register-password">Password <span class="required">*</span></label>
+                                <input type="password" id="register-password" required placeholder="Minimum 8 characters" autocomplete="new-password">
+                            </div>
+
+                            <button type="submit" class="gov-btn-primary" id="register-submit-btn">
+                                <span class="btn-label">Create Citizen Account</span>
+                                <span class="btn-spinner"></span>
+                            </button>
+                        </form>
+
+                        <div class="auth-footer-note">
+                            <p>By accessing the portal, you agree to our Terms of Use and Privacy Policy.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- 6. Footer -->
+    <footer class="gov-footer">
+        <div class="gov-container">
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/policies">Policies</a>
+                <a href="/schemes">Government Schemes</a>
+                <a href="/login">Citizen Login</a>
+                <a href="#help">Help Desk</a>
+            </div>
+            <p class="copyright">
+                © 2026 PolicyGPT Portal. Developed for Public Scheme Intelligence and Policy Analysis.
+            </p>
+            <p class="disclaimer">
+                Content on this portal is managed for public welfare policy search and AI scheme matching.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- JavaScript Script -->
+    <script src="/static/app.js"></script>
+</body>
+</html>

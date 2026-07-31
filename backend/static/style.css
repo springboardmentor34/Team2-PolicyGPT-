@@ -1,0 +1,532 @@
+/* Government Portal Theme Variables */
+:root {
+    --gov-navy: #0b3c5d;
+    --gov-navy-dark: #072a42;
+    --gov-navy-light: #1d5a8a;
+    --gov-gold: #d9b310;
+    --gov-saffron: #ff9933;
+    --gov-green: #138808;
+    --gov-bg: #f4f6f8;
+    --gov-card-bg: #ffffff;
+    --gov-border: #dcdcdc;
+    --text-primary: #222222;
+    --text-secondary: #555555;
+    --text-muted: #777777;
+    --error-color: #d9534f;
+    --success-color: #28a745;
+    --base-font-size: 14px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--gov-bg);
+    font-family: 'Open Sans', 'Noto Sans Devanagari', 'Noto Sans Telugu', sans-serif;
+    font-size: var(--base-font-size);
+    color: var(--text-primary);
+    line-height: 1.5;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.gov-container {
+    width: 100%;
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.flex-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 1. Top Government Accessibility Header */
+.gov-top-bar {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    padding: 6px 0;
+    font-size: 12px;
+}
+
+.gov-identity {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.flag-icon {
+    font-size: 14px;
+}
+
+.gov-title {
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.gov-accessibility {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.font-sizer {
+    display: flex;
+    gap: 4px;
+}
+
+.font-sizer button {
+    background: #333333;
+    color: #ffffff;
+    border: 1px solid #555555;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+}
+
+.font-sizer button:hover {
+    background: var(--gov-navy-light);
+}
+
+.divider {
+    color: #555555;
+}
+
+.lang-toggle {
+    background: var(--gov-saffron);
+    color: #000000;
+    font-weight: 700;
+    border: none;
+    padding: 2px 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+/* 2. Main Header & Banner */
+.main-header {
+    background: var(--gov-card-bg);
+    padding: 15px 0;
+    border-bottom: 1px solid var(--gov-border);
+}
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo-area {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.emblem-container {
+    width: 48px;
+    height: 48px;
+}
+
+.emblem-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.portal-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--gov-navy);
+    line-height: 1.2;
+}
+
+.portal-title span {
+    color: var(--gov-gold);
+}
+
+.portal-subtitle {
+    font-size: 12px;
+    color: var(--text-secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.badge-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: #f0f4f8;
+    border: 1px solid #d0dbe5;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gov-navy);
+}
+
+/* 3. Tricolor Line Bar */
+.tricolor-bar {
+    display: flex;
+    height: 4px;
+    width: 100%;
+}
+
+.tricolor-bar .saffron {
+    flex: 1;
+    background-color: var(--gov-saffron);
+}
+
+.tricolor-bar .white {
+    flex: 1;
+    background-color: #ffffff;
+}
+
+.tricolor-bar .green {
+    flex: 1;
+    background-color: var(--gov-green);
+}
+
+/* 4. Breadcrumb Bar */
+.breadcrumb-bar {
+    background-color: #e9ecef;
+    padding: 8px 0;
+    font-size: 12px;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.breadcrumb-bar a {
+    color: var(--gov-navy);
+    text-decoration: none;
+}
+
+.breadcrumb-bar a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumb-sep {
+    margin: 0 6px;
+    color: var(--text-muted);
+}
+
+.breadcrumb-item.active {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+/* 5. Main Content Layout */
+.main-content {
+    flex: 1;
+    padding: 35px 0;
+}
+
+.portal-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 30px;
+    align-items: start;
+}
+
+@media (max-width: 850px) {
+    .portal-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Info Panel (Left) */
+.info-card {
+    background: var(--gov-card-bg);
+    border: 1px solid var(--gov-border);
+    border-top: 4px solid var(--gov-navy);
+    border-radius: 4px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.info-header {
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    color: var(--gov-navy);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-body {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 13.5px;
+}
+
+.feature-list {
+    list-style: none;
+    margin-bottom: 25px;
+}
+
+.feature-list li {
+    padding: 8px 0;
+    border-bottom: 1px dashed #e5e5e5;
+    font-size: 13px;
+    color: var(--text-primary);
+    font-weight: 500;
+}
+
+.helpline-box {
+    background: #fff8e7;
+    border: 1px solid #ffe8b3;
+    padding: 12px 15px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.helpline-title {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: #b7791f;
+}
+
+.helpline-number {
+    font-weight: 700;
+    font-size: 15px;
+    color: #744210;
+}
+
+/* Auth Card (Right) */
+.auth-box {
+    background: var(--gov-card-bg);
+    border: 1px solid var(--gov-border);
+    border-top: 4px solid var(--gov-saffron);
+    border-radius: 4px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    overflow: hidden;
+}
+
+.auth-header-bar {
+    background: #f8f9fa;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--gov-border);
+    text-align: center;
+}
+
+.security-badge {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gov-navy);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.auth-tabs {
+    display: flex;
+    background: #e9ecef;
+    border-bottom: 1px solid var(--gov-border);
+}
+
+.tab-item {
+    flex: 1;
+    padding: 12px;
+    background: none;
+    border: none;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-item.active {
+    background: var(--gov-card-bg);
+    color: var(--gov-navy);
+    border-bottom-color: var(--gov-navy);
+}
+
+.auth-form-body {
+    padding: 25px;
+    display: none;
+}
+
+.auth-form-body.active {
+    display: block;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 6px;
+}
+
+.required {
+    color: var(--error-color);
+}
+
+input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13.5px;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus {
+    border-color: var(--gov-navy);
+    box-shadow: 0 0 0 3px rgba(11, 60, 93, 0.15);
+}
+
+.input-hint {
+    display: block;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-top: 4px;
+}
+
+.gov-btn-primary {
+    width: 100%;
+    background-color: var(--gov-navy);
+    color: #ffffff;
+    border: none;
+    padding: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.gov-btn-primary:hover {
+    background-color: var(--gov-navy-light);
+}
+
+.auth-footer-note {
+    background: #f8f9fa;
+    padding: 12px 20px;
+    border-top: 1px solid var(--gov-border);
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* Spinner */
+.btn-spinner {
+    display: none;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 8px;
+}
+
+.gov-btn-primary.loading .btn-spinner {
+    display: inline-block;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* 6. Footer */
+.gov-footer {
+    background-color: var(--gov-navy-dark);
+    color: #ffffff;
+    padding: 25px 0;
+    text-align: center;
+    font-size: 12px;
+    border-top: 3px solid var(--gov-saffron);
+}
+
+.footer-links {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #a5c4d4;
+    text-decoration: none;
+    margin: 0 10px;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.copyright {
+    color: #d0e0eb;
+    margin-bottom: 4px;
+}
+
+.disclaimer {
+    color: #8faec4;
+    font-size: 11px;
+}
+
+/* Toast Container */
+.toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.toast {
+    background: #ffffff;
+    border-left: 4px solid var(--gov-navy);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 12px 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 280px;
+    animation: slideIn 0.3s ease forwards;
+}
+
+.toast.success {
+    border-left-color: var(--success-color);
+}
+
+.toast.error {
+    border-left-color: var(--error-color);
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
