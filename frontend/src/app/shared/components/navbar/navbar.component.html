@@ -1,0 +1,74 @@
+<mat-toolbar color="primary" class="navbar">
+  <a routerLink="/home" class="brand" (click)="closeMenu()">
+    <mat-icon aria-hidden="true">account_balance</mat-icon>
+    <span>PolicyGPT</span>
+  </a>
+
+  <span class="spacer"></span>
+
+  <nav class="nav-links desktop-only">
+    <a
+      *ngFor="let link of navLinks"
+      [routerLink]="link.path"
+      routerLinkActive="active-link"
+      class="nav-link"
+    >
+      {{ link.label }}
+    </a>
+  </nav>
+
+  <span class="spacer desktop-only"></span>
+
+  <div class="auth-actions desktop-only">
+    <ng-container *ngIf="!auth.isAuthenticated(); else userMenuDesktop">
+      <a mat-stroked-button routerLink="/login" class="login-btn">Login</a>
+      <a mat-raised-button color="accent" routerLink="/register">Register</a>
+    </ng-container>
+    <ng-template #userMenuDesktop>
+      <button mat-button [matMenuTriggerFor]="userMenu" class="user-chip">
+        <mat-icon>account_circle</mat-icon>
+        {{ auth.currentUser()?.fullName }}
+      </button>
+      <mat-menu #userMenu="matMenu">
+        <a mat-menu-item routerLink="/profile">
+          <mat-icon>person</mat-icon> Profile
+        </a>
+        <a mat-menu-item routerLink="/dashboard">
+          <mat-icon>dashboard</mat-icon> Dashboard
+        </a>
+        <button mat-menu-item (click)="logout()">
+          <mat-icon>logout</mat-icon> Logout
+        </button>
+      </mat-menu>
+    </ng-template>
+  </div>
+
+  <button mat-icon-button class="mobile-only" (click)="toggleMenu()" aria-label="Toggle menu">
+    <mat-icon>{{ menuOpen ? 'close' : 'menu' }}</mat-icon>
+  </button>
+</mat-toolbar>
+
+<nav class="mobile-menu mobile-only" *ngIf="menuOpen">
+  <a
+    *ngFor="let link of navLinks"
+    [routerLink]="link.path"
+    routerLinkActive="active-link"
+    class="mobile-link"
+    (click)="closeMenu()"
+  >
+    {{ link.label }}
+  </a>
+  <hr />
+  <ng-container *ngIf="!auth.isAuthenticated(); else mobileUser">
+    <a mat-stroked-button routerLink="/login" (click)="closeMenu()">Login</a>
+    <a mat-raised-button color="accent" routerLink="/register" (click)="closeMenu()">Register</a>
+  </ng-container>
+  <ng-template #mobileUser>
+    <a mat-button routerLink="/profile" (click)="closeMenu()">
+      <mat-icon>person</mat-icon> Profile
+    </a>
+    <button mat-button (click)="logout()">
+      <mat-icon>logout</mat-icon> Logout
+    </button>
+  </ng-template>
+</nav>

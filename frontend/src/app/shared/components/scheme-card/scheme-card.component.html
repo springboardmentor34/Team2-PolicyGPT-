@@ -1,0 +1,24 @@
+<mat-card class="scheme-card card-surface">
+  <div class="card-top">
+    <span class="status-badge" [ngClass]="scheme.status.toLowerCase()">{{ scheme.status }}</span>
+    <span class="category">{{ scheme.category }}</span>
+  </div>
+
+  <h3 class="title">{{ scheme.name }}</h3>
+  <p class="desc">{{ scheme.description }}</p>
+
+  <div class="benefit-box">
+    <mat-icon>redeem</mat-icon>
+    <span>{{ scheme.benefits }}</span>
+  </div>
+
+  <div class="meta">
+    <span><mat-icon>account_balance</mat-icon>{{ scheme.department }}</span>
+    <span><mat-icon>event_busy</mat-icon>Deadline: {{ scheme.applicationDeadline | date: 'mediumDate' }}</span>
+  </div>
+
+  <div class="actions">
+    <button mat-stroked-button color="primary">View Details</button>
+    <button mat-raised-button color="accent">Check Eligibility</button>
+  </div>
+</mat-card>

@@ -1,0 +1,28 @@
+<mat-card class="policy-card card-surface">
+  <div class="card-top">
+    <span class="status-badge" [ngClass]="policy.status.toLowerCase()">{{ policy.status }}</span>
+    <span class="category">{{ policy.category }}</span>
+  </div>
+
+  <h3 class="title">{{ policy.title }}</h3>
+  <p class="desc">{{ policy.description }}</p>
+
+  <div class="meta">
+    <span><mat-icon>account_balance</mat-icon>{{ policy.ministry }}</span>
+    <span><mat-icon>place</mat-icon>{{ policy.state }}</span>
+    <span><mat-icon>event</mat-icon>{{ policy.publicationDate | date: 'mediumDate' }}</span>
+  </div>
+
+  <div class="tags">
+    <mat-chip-set>
+      <mat-chip *ngFor="let tag of policy.tags">{{ tag }}</mat-chip>
+    </mat-chip-set>
+  </div>
+
+  <div class="actions">
+    <button mat-stroked-button color="primary">View Details</button>
+    <button mat-button>
+      <mat-icon>bookmark_border</mat-icon> Save
+    </button>
+  </div>
+</mat-card>

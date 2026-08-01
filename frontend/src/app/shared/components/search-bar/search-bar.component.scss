@@ -1,0 +1,13 @@
+.search-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+}
+.search-field { flex: 1; }
+.search-btn { height: 48px; }
+
+@media (max-width: 600px) {
+  .search-bar { flex-direction: column; align-items: stretch; }
+  .search-btn { width: 100%; }
+}

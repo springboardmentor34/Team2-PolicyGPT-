@@ -1,0 +1,105 @@
+/* ==========================================================================
+   PolicyGPT — Global Design Tokens & Base Styles
+   ========================================================================== */
+:root {
+  --color-navy: #0B3D62;
+  --color-navy-dark: #072a45;
+  --color-teal: #0E7C7B;
+  --color-gold: #D9A441;
+  --color-bg: #F5F7FA;
+  --color-surface: #FFFFFF;
+  --color-text: #1E2A33;
+  --color-text-muted: #5C6B73;
+  --color-border: #E1E7EC;
+  --color-success: #2E8B57;
+  --color-danger: #C0392B;
+
+  --font-display: 'Poppins', sans-serif;
+  --font-body: 'Roboto', sans-serif;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  --shadow-sm: 0 1px 3px rgba(11, 61, 98, 0.08);
+  --shadow-md: 0 4px 16px rgba(11, 61, 98, 0.10);
+  --shadow-lg: 0 12px 32px rgba(11, 61, 98, 0.14);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: var(--color-bg);
+  font-family: var(--font-body);
+  color: var(--color-text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--color-navy);
+  margin: 0 0 0.5em 0;
+}
+
+a { color: var(--color-teal); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.page-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 24px;
+}
+
+.section-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-gold);
+}
+
+.card-surface {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.status-badge.active { background: rgba(46,139,87,0.12); color: var(--color-success); }
+.status-badge.draft { background: rgba(217,164,65,0.16); color: #9c7317; }
+.status-badge.closed { background: rgba(192,57,43,0.12); color: var(--color-danger); }
+
+/* Angular Material overrides for brand consistency */
+.mat-mdc-raised-button.mat-primary {
+  --mdc-protected-button-container-color: var(--color-navy);
+}
+.mat-toolbar.mat-primary {
+  background: var(--color-navy) !important;
+  color: #fff !important;
+}
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: #c3cdd6; border-radius: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+/* Responsive helpers */
+.flex-row { display: flex; flex-wrap: wrap; gap: 16px; }
+.flex-col { display: flex; flex-direction: column; gap: 16px; }
+.grid-auto {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .page-container { padding: 16px; }
+}

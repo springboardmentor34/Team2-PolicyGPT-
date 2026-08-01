@@ -1,0 +1,68 @@
+.hero {
+  background: linear-gradient(135deg, var(--color-navy) 0%, var(--color-navy-dark) 100%);
+  color: #fff;
+  padding: 64px 0 56px;
+}
+.hero-inner { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; max-width: 760px; }
+.hero-inner .section-eyebrow { color: var(--color-gold); }
+.hero-inner h1 { color: #fff; font-size: 40px; line-height: 1.2; }
+.hero-sub { color: rgba(255,255,255,0.8); font-size: 16px; max-width: 560px; }
+.hero-search { width: 100%; max-width: 620px; margin-top: 8px; }
+.hero-search ::ng-deep .mat-mdc-text-field-wrapper { background: #fff; border-radius: 8px; }
+.hero-actions { display: flex; gap: 12px; margin-top: 10px; }
+.ghost-btn { color: #fff !important; border-color: rgba(255,255,255,0.5) !important; }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: -32px;
+  position: relative;
+  z-index: 2;
+}
+.stat-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 20px;
+  text-align: center;
+}
+.stat-value { font-family: var(--font-display); font-size: 26px; font-weight: 700; color: var(--color-navy); }
+.stat-label { font-size: 13px; color: var(--color-text-muted); margin-top: 4px; }
+
+.highlights { margin-top: 56px; }
+.highlights h2 { font-size: 26px; margin-bottom: 24px; }
+.highlight-card {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  mat-icon { color: var(--color-teal); font-size: 28px; height: 28px; width: 28px; }
+  h3 { font-size: 16px; margin: 0; }
+  p { font-size: 14px; color: var(--color-text-muted); margin: 0; }
+}
+
+.cta { margin: 56px auto 64px; }
+.cta-box {
+  background: var(--color-teal);
+  color: #fff;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  h2 { color: #fff; font-size: 22px; }
+  p { color: rgba(255,255,255,0.85); margin: 4px 0 0; }
+}
+
+@media (max-width: 900px) {
+  .stats { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 700px) {
+  .hero-inner h1 { font-size: 30px; }
+  .cta-box { flex-direction: column; align-items: flex-start; }
+}
+@media (max-width: 480px) {
+  .stats { grid-template-columns: 1fr 1fr; margin-top: 16px; }
+}

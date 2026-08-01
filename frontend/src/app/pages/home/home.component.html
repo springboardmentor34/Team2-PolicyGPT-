@@ -1,0 +1,51 @@
+<section class="hero">
+  <div class="hero-inner page-container">
+    <span class="section-eyebrow">Government Policy & Public Scheme Intelligence</span>
+    <h1>One platform to search, understand,<br />and act on every government scheme.</h1>
+    <p class="hero-sub">
+      PolicyGPT brings policies, welfare schemes, notifications, and eligibility rules from
+      every department into a single, searchable, citizen-first platform.
+    </p>
+
+    <div class="hero-search">
+      <app-search-bar
+        placeholder="Try 'scholarship for students' or 'farmer income support'"
+        (search)="onHomeSearch($event)"
+      ></app-search-bar>
+    </div>
+
+    <div class="hero-actions">
+      <a mat-raised-button color="accent" routerLink="/schemes">Check Eligibility</a>
+      <a mat-stroked-button routerLink="/policies" class="ghost-btn">Browse Policies</a>
+    </div>
+  </div>
+</section>
+
+<section class="stats page-container">
+  <div class="stat-card" *ngFor="let s of stats">
+    <div class="stat-value">{{ s.value }}</div>
+    <div class="stat-label">{{ s.label }}</div>
+  </div>
+</section>
+
+<section class="highlights page-container">
+  <span class="section-eyebrow">Why PolicyGPT</span>
+  <h2>Everything you need to navigate government support</h2>
+  <div class="grid-auto">
+    <div class="highlight-card card-surface" *ngFor="let h of highlights">
+      <mat-icon>{{ h.icon }}</mat-icon>
+      <h3>{{ h.title }}</h3>
+      <p>{{ h.desc }}</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta page-container">
+  <div class="cta-box">
+    <div>
+      <h2>Ready to find the schemes you qualify for?</h2>
+      <p>Create a free account and get personalized recommendations in under two minutes.</p>
+    </div>
+    <a mat-raised-button color="accent" routerLink="/register">Get Started</a>
+  </div>
+</section>

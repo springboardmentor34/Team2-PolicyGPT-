@@ -1,0 +1,54 @@
+<div class="page-container">
+  <app-header
+    [eyebrow]="auth.currentUser()?.role || 'Dashboard'"
+    [title]="'Welcome, ' + (auth.currentUser()?.fullName || 'User') + ' 👋'"
+    subtitle="Here's a snapshot of policies, schemes, and activity relevant to you."
+  ></app-header>
+
+  <app-loader *ngIf="loading()" message="Loading your dashboard…"></app-loader>
+
+  <ng-container *ngIf="!loading()">
+    <!-- Stat cards -->
+    <div class="stats-grid">
+      <mat-card class="stat-card card-surface" *ngFor="let s of stats()" [ngClass]="s.accent">
+        <mat-icon>{{ s.icon }}</mat-icon>
+        <div>
+          <div class="stat-value">{{ s.value }}</div>
+          <div class="stat-label">{{ s.label }}</div>
+        </div>
+      </mat-card>
+    </div>
+
+    <div class="dashboard-body">
+      <!-- Main column -->
+      <div class="main-col">
+        <div class="toolbar">
+          <app-search-bar
+            placeholder="Search your policies…"
+            (search)="onSearch($event)"
+          ></app-search-bar>
+          <mat-form-field appearance="outline" class="category-select">
+            <mat-label>Category</mat-label>
+            <mat-select [ngModel]="categoryFilter()" (ngModelChange)="categoryFilter.set($event)">
+              <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <h3 class="section-title">Recent Policies</h3>
+        <div class="grid-auto">
+          <app-policy-card *ngFor="let p of recentPolicies()" [policy]="p"></app-policy-card>
+        </div>
+        <p class="empty" *ngIf="recentPolicies().length === 0">No policies match your filters.</p>
+      </div>
+
+      <!-- Side column -->
+      <div class="side-col">
+        <h3 class="section-title">Latest Schemes</h3>
+        <div class="flex-col">
+          <app-scheme-card *ngFor="let s of recentSchemes()" [scheme]="s"></app-scheme-card>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,61 @@
+<div class="auth-page">
+  <mat-card class="auth-card card-surface">
+    <div class="auth-head">
+      <mat-icon>account_balance</mat-icon>
+      <h1>Welcome back</h1>
+      <p>Log in to access your PolicyGPT dashboard.</p>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="auth-form">
+      <mat-form-field appearance="outline">
+        <mat-label>Email address</mat-label>
+        <input matInput type="email" formControlName="email" placeholder="you@example.com" />
+        <mat-icon matPrefix>mail_outline</mat-icon>
+        <mat-error *ngIf="form.get('email')?.hasError('required')">Email is required</mat-error>
+        <mat-error *ngIf="form.get('email')?.hasError('email')">Enter a valid email</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Password</mat-label>
+        <input matInput [type]="hidePassword() ? 'password' : 'text'" formControlName="password" />
+        <mat-icon matPrefix>lock_outline</mat-icon>
+        <button
+          mat-icon-button
+          matSuffix
+          type="button"
+          (click)="togglePassword()"
+          [attr.aria-label]="'Toggle password visibility'"
+        >
+          <mat-icon>{{ hidePassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <mat-error *ngIf="form.get('password')?.hasError('required')">Password is required</mat-error>
+        <mat-error *ngIf="form.get('password')?.hasError('minlength')">Minimum 6 characters</mat-error>
+      </mat-form-field>
+
+      <div class="error-banner" *ngIf="errorMsg()">
+        <mat-icon>error_outline</mat-icon> {{ errorMsg() }}
+      </div>
+
+      <button mat-raised-button color="primary" class="submit-btn" type="submit" [disabled]="loading()">
+        <mat-icon *ngIf="loading()" class="spin">autorenew</mat-icon>
+        {{ loading() ? 'Logging in…' : 'Login' }}
+      </button>
+    </form>
+
+    <div class="demo-box">
+      <p class="demo-title">Try a demo account (mock data)</p>
+      <div class="demo-list">
+        <button
+          type="button"
+          class="demo-chip"
+          *ngFor="let acc of demoAccounts"
+          (click)="fillDemo(acc.email, acc.password)"
+        >
+          {{ acc.role }}
+        </button>
+      </div>
+    </div>
+
+    <p class="switch-link">Don't have an account? <a routerLink="/register">Register here</a></p>
+  </mat-card>
+</div>

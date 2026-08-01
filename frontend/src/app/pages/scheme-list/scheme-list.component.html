@@ -1,0 +1,133 @@
+<div class="page-container">
+  <app-header
+    eyebrow="Public Schemes"
+    title="Discover Welfare Schemes"
+    subtitle="Browse all schemes or check which ones you're eligible for in under a minute."
+  ></app-header>
+
+  <mat-tab-group animationDuration="200ms" class="scheme-tabs">
+    <!-- Browse tab -->
+    <mat-tab label="Browse Schemes">
+      <div class="tab-content">
+        <div class="filters card-surface">
+          <app-search-bar
+            placeholder="Search schemes by name or benefit…"
+            [value]="keyword"
+            (search)="onKeywordSearch($event)"
+          ></app-search-bar>
+          <mat-form-field appearance="outline" class="category-select">
+            <mat-label>Category</mat-label>
+            <mat-select [(ngModel)]="category" (selectionChange)="runSearch()">
+              <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <app-loader *ngIf="loading()" message="Loading schemes…"></app-loader>
+
+        <ng-container *ngIf="!loading()">
+          <p class="result-count">{{ schemes().length }} scheme(s) found</p>
+          <div class="grid-auto">
+            <app-scheme-card *ngFor="let s of schemes()" [scheme]="s"></app-scheme-card>
+          </div>
+          <p class="empty" *ngIf="schemes().length === 0">No schemes match your search.</p>
+        </ng-container>
+      </div>
+    </mat-tab>
+
+    <!-- Eligibility checker tab -->
+    <mat-tab label="Eligibility Checker">
+      <div class="tab-content">
+        <form [formGroup]="eligibilityForm" (ngSubmit)="checkEligibility()" class="eligibility-form card-surface">
+          <h3>Tell us about yourself</h3>
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Age</mat-label>
+              <input matInput type="number" formControlName="age" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Gender</mat-label>
+              <mat-select formControlName="gender">
+                <mat-option value="Any">Prefer not to say</mat-option>
+                <mat-option value="Male">Male</mat-option>
+                <mat-option value="Female">Female</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Annual income (₹)</mat-label>
+              <input matInput type="number" formControlName="income" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Occupation</mat-label>
+              <mat-select formControlName="occupation">
+                <mat-option value="Salaried">Salaried</mat-option>
+                <mat-option value="Farmer">Farmer</mat-option>
+                <mat-option value="Self-employed">Self-employed</mat-option>
+                <mat-option value="Student">Student</mat-option>
+                <mat-option value="Unemployed">Unemployed</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Education</mat-label>
+              <mat-select formControlName="education">
+                <mat-option value="Below 8th">Below 8th</mat-option>
+                <mat-option value="8th Pass">8th Pass</mat-option>
+                <mat-option value="10th Pass">10th Pass</mat-option>
+                <mat-option value="Graduate">Graduate</mat-option>
+                <mat-option value="Postgraduate">Postgraduate</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Location</mat-label>
+              <mat-select formControlName="location">
+                <mat-option value="Urban">Urban</mat-option>
+                <mat-option value="Rural">Rural</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Social category</mat-label>
+              <mat-select formControlName="socialCategory">
+                <mat-option value="General">General</mat-option>
+                <mat-option value="OBC">OBC</mat-option>
+                <mat-option value="SC">SC</mat-option>
+                <mat-option value="ST">ST</mat-option>
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Disability status</mat-label>
+              <mat-select formControlName="disabilityStatus">
+                <mat-option [value]="false">No</mat-option>
+                <mat-option [value]="true">Yes</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <button mat-raised-button color="accent" type="submit" [disabled]="checking()">
+            <mat-icon *ngIf="checking()" class="spin">autorenew</mat-icon>
+            {{ checking() ? 'Checking…' : 'Check My Eligibility' }}
+          </button>
+        </form>
+
+        <div class="results" *ngIf="checked() && !checking()">
+          <h3>
+            <mat-icon>fact_check</mat-icon>
+            You may be eligible for {{ eligibleSchemes().length }} scheme(s)
+          </h3>
+          <div class="grid-auto">
+            <app-scheme-card *ngFor="let s of eligibleSchemes()" [scheme]="s"></app-scheme-card>
+          </div>
+          <p class="empty" *ngIf="eligibleSchemes().length === 0">
+            No matching schemes yet — try adjusting your details above.
+          </p>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

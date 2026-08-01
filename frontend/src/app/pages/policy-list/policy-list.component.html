@@ -1,0 +1,52 @@
+<div class="page-container">
+  <app-header
+    eyebrow="Policy Search"
+    title="Browse Government Policies"
+    subtitle="Search and filter policies by category, department, state, and status."
+  ></app-header>
+
+  <div class="filters card-surface">
+    <app-search-bar
+      placeholder="Search by policy name, keyword, or tag…"
+      [value]="keyword"
+      (search)="onKeywordSearch($event)"
+    ></app-search-bar>
+
+    <div class="select-row">
+      <mat-form-field appearance="outline">
+        <mat-label>Category</mat-label>
+        <mat-select [(ngModel)]="category" (selectionChange)="runSearch()">
+          <mat-option *ngFor="let c of categories" [value]="c">{{ c }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>State</mat-label>
+        <mat-select [(ngModel)]="state" (selectionChange)="runSearch()">
+          <mat-option *ngFor="let s of states" [value]="s">{{ s }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Status</mat-label>
+        <mat-select [(ngModel)]="status" (selectionChange)="runSearch()">
+          <mat-option *ngFor="let st of statuses" [value]="st">{{ st }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button class="reset-btn" type="button" (click)="resetFilters()">Reset filters</button>
+    </div>
+  </div>
+
+  <app-loader *ngIf="loading()" message="Searching policies…"></app-loader>
+
+  <ng-container *ngIf="!loading()">
+    <p class="result-count">{{ policies().length }} polic{{ policies().length === 1 ? 'y' : 'ies' }} found</p>
+    <div class="grid-auto">
+      <app-policy-card *ngFor="let p of policies()" [policy]="p"></app-policy-card>
+    </div>
+    <p class="empty" *ngIf="policies().length === 0">
+      No policies match your search. Try adjusting your filters.
+    </p>
+  </ng-container>
+</div>
