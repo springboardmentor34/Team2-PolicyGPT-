@@ -1,6 +1,6 @@
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from app.database.database import Base
+from app.database.base import Base
 from datetime import datetime, UTC
 
 

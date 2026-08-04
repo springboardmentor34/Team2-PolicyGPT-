@@ -1,0 +1,314 @@
+/* Global styles and Custom Theme Variables */
+
+:root {
+  /* Indian Flag Colors */
+  --color-saffron: #FF9933;
+  --color-saffron-light: rgba(255, 153, 51, 0.15);
+  --color-white: #FFFFFF;
+  --color-white-fog: rgba(255, 255, 255, 0.75);
+  --color-green: #138808;
+  --color-green-light: rgba(19, 136, 8, 0.15);
+  --color-blue: #000080; /* Ashoka Chakra */
+  --color-text: #333333;
+  --color-text-muted: #666666;
+  --bg-gradient: linear-gradient(135deg, var(--color-saffron-light) 0%, #ffffff 50%, var(--color-green-light) 100%);
+
+  /* Fog / Glassmorphism Effects */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.1);
+  --backdrop-blur: blur(12px);
+  
+  /* Layout constraints */
+  --sidebar-width: 280px;
+  --header-height: 80px;
+}
+
+/* Dark Mode Variables */
+[data-theme="dark"] {
+  --color-saffron: #FFB366;
+  --color-white: #121212;
+  --color-white-fog: rgba(30, 30, 30, 0.85);
+  --color-green: #3CB043;
+  --color-blue: #66B2FF;
+  --color-text: #E0E0E0;
+  --color-text-muted: #AAAAAA;
+  --bg-gradient: linear-gradient(135deg, rgba(255, 153, 51, 0.05) 0%, #1a1a1a 50%, rgba(19, 136, 8, 0.05) 100%);
+
+  --glass-bg: rgba(40, 40, 40, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.05);
+  --glass-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+}
+
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.1rem;
+  background: var(--bg-gradient);
+  background-image: url('/parliament-hero.jpg');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-blend-mode: overlay;
+  color: var(--color-text);
+  transition: background 0.5s ease, color 0.5s ease;
+  min-height: 100vh;
+}
+
+/* Glassmorphism utility class */
+.glass-container {
+  background: var(--glass-bg);
+  backdrop-filter: var(--backdrop-blur);
+  -webkit-backdrop-filter: var(--backdrop-blur);
+  border-radius: 20px;
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow);
+  padding: 32px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.5s ease;
+}
+
+.glass-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 50px 0 rgba(31, 38, 135, 0.15);
+}
+
+/* Buttons with Indian Flag Theme */
+.btn-primary {
+  background: var(--color-saffron);
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-weight: 500;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+  background: #e68a2e;
+  box-shadow: 0 8px 15px rgba(255, 153, 51, 0.4);
+  transform: scale(1.02);
+}
+
+.btn-success {
+  background: var(--color-green);
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  font-weight: 500;
+  font-size: 1.1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-success:hover {
+  background: #107306;
+  box-shadow: 0 8px 15px rgba(19, 136, 8, 0.4);
+  transform: scale(1.02);
+}
+
+/* Form inputs styling for fog theme */
+.fog-input {
+  background: rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text);
+  border-radius: 12px;
+  padding: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .fog-input {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.fog-input:focus {
+  outline: none;
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--color-saffron);
+  box-shadow: 0 0 0 3px rgba(255, 153, 51, 0.3);
+}
+
+[data-theme="dark"] .fog-input:focus {
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* Layout Utilities */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  background: var(--color-white-fog);
+  backdrop-filter: var(--backdrop-blur);
+  border-right: 1px solid var(--glass-border);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: fixed;
+  height: 100vh;
+  box-sizing: border-box;
+  z-index: 100;
+  transition: background 0.5s ease;
+}
+
+.main-content {
+  margin-left: var(--sidebar-width);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  height: var(--header-height);
+  background: var(--color-white-fog);
+  backdrop-filter: var(--backdrop-blur);
+  border-bottom: 2px solid var(--color-saffron);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  position: sticky;
+  top: 0;
+  z-index: 99;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  transition: background 0.5s ease;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--color-text);
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 12px 16px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.nav-link:hover, .nav-link.active-link {
+  background: var(--color-saffron-light);
+  color: var(--color-saffron);
+}
+
+.nav-link i {
+  font-size: 24px;
+}
+
+.theme-toggle, .lang-select {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  color: var(--color-text);
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--color-saffron-light);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--color-blue);
+}
+
+.stat-value {
+  font-size: 3.5rem;
+  font-weight: bold;
+  color: var(--color-blue);
+  margin: 16px 0;
+}
+
+.grid-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 32px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+.slide-up {
+  animation: slideUp 0.8s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+}
+
+.hover-scale {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.hover-scale:hover {
+  transform: scale(1.03);
+  box-shadow: 0 16px 50px 0 rgba(31, 38, 135, 0.2);
+}
+
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+.ripple::after {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.7) 10%, transparent 10.01%);
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transform: scale(10, 10);
+  opacity: 0;
+  transition: transform .5s, opacity 1s;
+}
+.ripple:active::after {
+  transform: scale(0, 0);
+  opacity: 0.3;
+  transition: 0s;
+}
+
+/* Base element transitions */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+

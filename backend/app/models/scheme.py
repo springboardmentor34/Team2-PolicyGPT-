@@ -1,6 +1,7 @@
 from datetime import datetime, UTC
 from sqlalchemy import Column, Integer, String, Text, DateTime
-from app.database.database import Base
+from sqlalchemy.orm import relationship
+from app.database.base import Base
 
 
 class Scheme(Base):
@@ -14,3 +15,5 @@ class Scheme(Base):
     state = Column(String, nullable=True)
     status = Column(String, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+
+    eligibility_rules = relationship("EligibilityRule", back_populates="scheme")

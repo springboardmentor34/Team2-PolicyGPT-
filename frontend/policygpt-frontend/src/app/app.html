@@ -1,0 +1,93 @@
+<div class="app-layout">
+  
+  <!-- Sidebar -->
+  <aside class="sidebar" *ngIf="!isLandingPage">
+    <div class="logo-container" style="margin-bottom: 32px;">
+      <span style="font-size: 2rem;">☸️</span> <!-- Ashoka Chakra / Wheel Emoji -->
+      <span style="font-size: 1.8rem; color: var(--color-blue);">PolicyGPT</span>
+    </div>
+    
+    <nav style="display: flex; flex-direction: column; gap: 8px;">
+      <a routerLink="/dashboard" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-saffron);">dashboard</i>
+        <span>Dashboard</span>
+      </a>
+      <a routerLink="/policies" class="nav-link">
+        <i class="material-icons" style="color: var(--color-blue);">policy</i>
+        <span>Policies</span>
+      </a>
+      <a routerLink="/schemes" class="nav-link">
+        <i class="material-icons" style="color: var(--color-green);">account_balance</i>
+        <span>Schemes</span>
+      </a>
+      <a routerLink="/notifications" class="nav-link">
+        <i class="material-icons" style="color: var(--color-saffron);">notifications</i>
+        <span>Notifications</span>
+      </a>
+      <a routerLink="/feedback" class="nav-link">
+        <i class="material-icons" style="color: var(--color-blue);">feedback</i>
+        <span>Feedback</span>
+      </a>
+      <a routerLink="/reports" class="nav-link">
+        <i class="material-icons" style="color: var(--color-green);">bar_chart</i>
+        <span>Reports</span>
+      </a>
+    </nav>
+
+    <!-- Bottom Sidebar Links -->
+    <div style="margin-top: auto; display: flex; flex-direction: column; gap: 8px;">
+      <a routerLink="/login" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons">login</i>
+        <span>Login</span>
+      </a>
+      <a routerLink="/register" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons">person_add</i>
+        <span>Register</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content" [style.margin-left]="isLandingPage ? '0' : 'var(--sidebar-width)'">
+    
+    <!-- Top Header -->
+    <header class="header" *ngIf="!isLandingPage">
+      <div style="display: flex; align-items: center; gap: 16px; font-size: 1.2rem; font-weight: 600; color: var(--color-blue);">
+        <i class="material-icons" style="font-size: 2rem; color: var(--color-saffron);">account_balance</i>
+        Public Scheme Intelligence Platform 🇮🇳
+      </div>
+      
+      <div style="display: flex; align-items: center; gap: 24px;">
+        
+        <!-- Language Selector -->
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">language</i>
+          <select class="fog-input" style="padding: 8px; width: auto; cursor: pointer;" (change)="changeLanguage($event)">
+            <option *ngFor="let lang of languages" [value]="lang.code" [selected]="lang.code === selectedLang.code">
+              {{ lang.name }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button class="theme-toggle" (click)="toggleTheme()" title="Toggle Dark/Light Mode">
+          <i class="material-icons" style="color: var(--color-saffron);">{{ isDarkMode ? 'light_mode' : 'dark_mode' }}</i>
+          <span>{{ isDarkMode ? 'Light' : 'Dark' }}</span>
+        </button>
+
+        <!-- User Profile Placeholder -->
+        <div style="display: flex; align-items: center; gap: 12px; cursor: pointer; padding: 8px 16px; border-radius: 20px; background: var(--color-saffron-light);">
+          <i class="material-icons" style="color: var(--color-blue);">account_circle</i>
+          <span style="font-weight: 500;">Guest User</span>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Dynamic Router Outlet Area -->
+    <div style="padding: 40px;">
+      <router-outlet></router-outlet>
+    </div>
+
+  </main>
+</div>

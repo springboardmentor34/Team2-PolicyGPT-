@@ -1,0 +1,85 @@
+<div style="max-width: 1400px; margin: 0 auto;">
+  
+  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h2 style="color: var(--color-blue); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
+        <i class="material-icons">policy</i> Government Policies
+      </h2>
+      <p style="color: var(--color-text-muted); margin: 0;">Browse, search, and manage official government policies.</p>
+    </div>
+    <button class="btn-primary" (click)="toggleForm()">
+      <i class="material-icons">{{ showForm ? 'close' : 'add' }}</i> 
+      {{ showForm ? 'Cancel' : 'Create Policy' }}
+    </button>
+  </div>
+
+  <div *ngIf="showForm" class="glass-container" style="margin-bottom: 32px; border-left: 4px solid var(--color-green);">
+    <h3 style="margin-top: 0;">{{ isEditing ? 'Edit Policy' : 'Create New Policy' }}</h3>
+    <form [formGroup]="policyForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Title *</label>
+          <input type="text" class="fog-input" formControlName="title" placeholder="Policy Title">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Category</label>
+          <input type="text" class="fog-input" formControlName="category" placeholder="e.g. Education, Health">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Department</label>
+          <input type="text" class="fog-input" formControlName="department" placeholder="e.g. Ministry of Finance">
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Status</label>
+          <select class="fog-input" formControlName="status">
+            <option value="Draft">Draft</option>
+            <option value="Published">Published</option>
+            <option value="Archived">Archived</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-success" [disabled]="isLoading || policyForm.invalid" style="width: max-content;">
+        <span *ngIf="!isLoading">{{ isEditing ? 'Update Policy' : 'Save Policy' }} <i class="material-icons">save</i></span>
+        <span *ngIf="isLoading">Saving... ⏳</span>
+      </button>
+    </form>
+  </div>
+
+  <div style="display: flex; flex-direction: column; gap: 16px;">
+    <div *ngIf="policies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+      No policies found. Create one to get started!
+    </div>
+
+    <div *ngFor="let policy of policies" class="glass-container" style="padding: 24px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--color-saffron);">
+      
+      <div style="display: flex; align-items: center; gap: 24px;">
+        <div style="background: rgba(255,153,51,0.1); padding: 16px; border-radius: 50%;">
+          <i class="material-icons" style="font-size: 2rem; color: var(--color-saffron);">article</i>
+        </div>
+        <div>
+          <h3 style="margin: 0 0 8px 0; font-size: 1.4rem;">{{ policy.title }}</h3>
+          <div style="display: flex; gap: 16px; color: var(--color-text-muted); font-size: 1rem;">
+            <span *ngIf="policy.category"><i class="material-icons" style="font-size: 1.1rem; vertical-align: bottom;">category</i> {{ policy.category }}</span>
+            <span *ngIf="policy.department"><i class="material-icons" style="font-size: 1.1rem; vertical-align: bottom;">account_balance</i> {{ policy.department }}</span>
+            <span><i class="material-icons" style="font-size: 1.1rem; vertical-align: bottom;">calendar_today</i> {{ policy.created_at | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <span [ngStyle]="{'background': policy.status === 'Published' ? 'rgba(19,136,8,0.2)' : 'rgba(255,153,51,0.2)', 'color': policy.status === 'Published' ? 'var(--color-green)' : 'var(--color-saffron)'}" style="padding: 8px 16px; border-radius: 20px; font-weight: 500;">
+          {{ policy.status || 'Draft' }}
+        </span>
+        <button class="btn-primary" style="padding: 10px; min-width: 40px;" (click)="editPolicy(policy)">
+          <i class="material-icons">edit</i>
+        </button>
+        <button class="btn-primary" style="padding: 10px; min-width: 40px; background: rgba(255,0,0,0.1); color: red; border: 1px solid rgba(255,0,0,0.2);" (click)="deletePolicy(policy.id)">
+          <i class="material-icons">delete</i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>

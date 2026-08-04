@@ -1,0 +1,29 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+export interface Feedback {
+  id: number;
+  user_id: number;
+  subject: string;
+  content: string;
+  status: string;
+  created_at: string;
+}
+
+@Injectable({
+  providedIn: 'root'
+})
+export class FeedbackService {
+  private API_URL = 'http://localhost:8000/feedback';
+
+  constructor(private http: HttpClient) {}
+
+  getFeedbacks(): Observable<Feedback[]> {
+    return this.http.get<Feedback[]>(this.API_URL + '/');
+  }
+
+  createFeedback(feedback: { subject: string, content: string }): Observable<Feedback> {
+    return this.http.post<Feedback>(this.API_URL + '/', feedback);
+  }
+}

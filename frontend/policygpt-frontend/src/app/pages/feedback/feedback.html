@@ -1,0 +1,73 @@
+<div style="max-width: 1400px; margin: 0 auto;">
+  
+  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center;">
+    <div>
+      <h2 style="color: var(--color-blue); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
+        <i class="material-icons">feedback</i> Public Feedback & Reviews
+      </h2>
+      <p style="color: var(--color-text-muted); margin: 0;">See what citizens are saying about government policies and schemes.</p>
+    </div>
+    <button class="btn-primary" (click)="toggleForm()">
+      <i class="material-icons">{{ showForm ? 'close' : 'rate_review' }}</i> 
+      {{ showForm ? 'Cancel' : 'Write a Review' }}
+    </button>
+  </div>
+
+  <div *ngIf="successMessage" style="background: rgba(0,200,100,0.15); border: 1px solid var(--color-green); border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; color: var(--color-green); font-weight: 500;">
+    ✅ {{ successMessage }}
+  </div>
+
+  <div *ngIf="showForm" class="glass-container" style="margin-bottom: 32px;">
+    <h3 style="margin-top: 0;">Submit Feedback</h3>
+    <form [formGroup]="feedbackForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 16px;">
+      
+      <div>
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Subject</label>
+        <input type="text" class="fog-input" formControlName="subject" placeholder="Enter policy/scheme name or topic">
+        <div *ngIf="feedbackForm.get('subject')?.invalid && feedbackForm.get('subject')?.touched" style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">
+          Subject is required and must be at least 5 characters.
+        </div>
+      </div>
+
+      <div>
+        <label style="display: block; margin-bottom: 8px; font-weight: 500;">Description</label>
+        <textarea class="fog-input" formControlName="content" rows="4" placeholder="Share your detailed experience or suggestions..."></textarea>
+        <div *ngIf="feedbackForm.get('content')?.invalid && feedbackForm.get('content')?.touched" style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">
+          Description is required and must be at least 10 characters.
+        </div>
+      </div>
+
+      <button type="submit" class="btn-success" [disabled]="isLoading" style="width: max-content;">
+        <span *ngIf="!isLoading">Submit Feedback <i class="material-icons">send</i></span>
+        <span *ngIf="isLoading">Submitting... ⏳</span>
+      </button>
+    </form>
+  </div>
+
+  <div class="grid-cards">
+    <div *ngFor="let fb of feedbacks" class="glass-container" style="display: flex; flex-direction: column;">
+      
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <i class="material-icons" style="font-size: 2.5rem; color: var(--color-text-muted);">account_circle</i>
+          <div>
+            <strong style="display: block; font-size: 1.1rem;">User #{{ fb.user_id }}</strong>
+            <span style="font-size: 0.85rem; color: var(--color-text-muted);">{{ fb.created_at | date:'medium' }}</span>
+          </div>
+        </div>
+        <span style="background: var(--glass-bg); padding: 4px 12px; border-radius: 12px; font-size: 0.85rem;">
+          {{ fb.status }}
+        </span>
+      </div>
+      
+      <div style="background: rgba(0,0,0,0.03); padding: 8px 12px; border-radius: 8px; margin-bottom: 16px; font-size: 0.9rem; display: inline-block; width: max-content;">
+        <strong style="color: var(--color-blue);">{{ fb.subject }}</strong>
+      </div>
+      
+      <p style="color: var(--color-text); margin: 0; font-style: italic;">
+        "{{ fb.content }}"
+      </p>
+
+    </div>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div style="max-width: 1400px; margin: 0 auto;">
+  
+  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-green);">
+    <h2 style="color: var(--color-green); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
+      <i class="material-icons">bar_chart</i> Analytics & Reports
+    </h2>
+    <p style="color: var(--color-text-muted); margin: 0;">Download official statistics, analytics, and impact reports regarding government policies.</p>
+  </div>
+
+  <div style="width: 100%; overflow-x: auto;" class="glass-container">
+    <div *ngIf="reports.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
+      No reports available at the moment.
+    </div>
+
+    <table *ngIf="reports.length > 0" style="width: 100%; text-align: left; border-collapse: collapse;">
+      <thead>
+        <tr style="border-bottom: 2px solid var(--glass-border);">
+          <th style="padding: 16px; color: var(--color-text-muted);">Report Title</th>
+          <th style="padding: 16px; color: var(--color-text-muted);">Published Date</th>
+          <th style="padding: 16px; color: var(--color-text-muted);">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let report of reports" style="border-bottom: 1px solid var(--glass-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
+          <td style="padding: 16px; display: flex; align-items: center; gap: 12px;">
+            <i class="material-icons" style="color: var(--color-green);">description</i>
+            <div>
+              <strong style="font-size: 1.1rem; color: var(--color-text); display: block;">{{ report.title }}</strong>
+              <span style="font-size: 0.85rem; color: var(--color-text-muted);">{{ report.content }}</span>
+            </div>
+          </td>
+          <td style="padding: 16px;">{{ report.created_at | date:'mediumDate' }}</td>
+          <td style="padding: 16px;">
+            <button class="btn-success" style="padding: 8px 16px; font-size: 0.9rem;">
+              <i class="material-icons" style="font-size: 1.2rem;">file_download</i> View
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

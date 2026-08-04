@@ -1,0 +1,122 @@
+<div style="display: flex; justify-content: center; align-items: center; min-height: 80vh; padding: 40px 0;">
+  <div class="glass-container" style="width: 100%; max-width: 600px; border-top: 6px solid var(--color-saffron);">
+
+    <div style="text-align: center; margin-bottom: 32px;">
+      <span style="font-size: 4rem;">📝</span>
+      <h1 style="color: var(--color-saffron); margin: 16px 0 8px 0;">Register Account</h1>
+      <p style="color: var(--color-text-muted); font-size: 1.1rem;">Join the Government Policy Intelligence Platform 🇮🇳</p>
+    </div>
+
+    <!-- Success Message -->
+    <div *ngIf="successMessage"
+         style="background: rgba(0,200,100,0.15); border: 1px solid var(--color-green); border-radius: 8px;
+                padding: 12px 16px; margin-bottom: 20px; color: var(--color-green); font-weight: 500;">
+      ✅ {{ successMessage }}
+    </div>
+
+    <!-- Error Message -->
+    <div *ngIf="errorMessage"
+         style="background: rgba(255,50,50,0.12); border: 1px solid #ff4444; border-radius: 8px;
+                padding: 12px 16px; margin-bottom: 20px; color: #ff6666; font-weight: 500;">
+      ❌ {{ errorMessage }}
+    </div>
+
+    <form [formGroup]="registerForm" (ngSubmit)="onRegister()" style="display: flex; flex-direction: column; gap: 24px;">
+
+      <!-- Full Name -->
+      <div>
+        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 500;">
+          <i class="material-icons" style="color: var(--color-blue);">person</i> Full Name
+        </label>
+        <input
+          id="reg-full-name"
+          type="text"
+          class="fog-input"
+          placeholder="Enter your official full name"
+          formControlName="full_name"
+        />
+        <div *ngIf="fullName?.invalid && fullName?.touched"
+             style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">
+          Full name must be at least 3 characters.
+        </div>
+      </div>
+
+      <!-- Email -->
+      <div>
+        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 500;">
+          <i class="material-icons" style="color: var(--color-saffron);">email</i> Email Address
+        </label>
+        <input
+          id="reg-email"
+          type="email"
+          class="fog-input"
+          placeholder="citizen@india.gov.in"
+          formControlName="email"
+        />
+        <div *ngIf="email?.invalid && email?.touched"
+             style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">
+          Please enter a valid email address.
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div>
+        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 500;">
+          <i class="material-icons" style="color: var(--color-green);">lock</i> Password
+        </label>
+        <input
+          id="reg-password"
+          type="password"
+          class="fog-input"
+          placeholder="Create a strong password (min 6 chars)"
+          formControlName="password"
+        />
+        <div *ngIf="password?.invalid && password?.touched"
+             style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">
+          Password must be at least 6 characters.
+        </div>
+      </div>
+
+      <!-- Role -->
+      <div>
+        <label style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: 500;">
+          <i class="material-icons" style="color: var(--color-blue);">badge</i> Account Role
+        </label>
+        <select
+          id="reg-role"
+          class="fog-input"
+          formControlName="role"
+          style="cursor: pointer;"
+        >
+          <option value="" disabled>Select your role...</option>
+          <option value="citizen">👤 Citizen</option>
+          <option value="researcher">🔬 Researcher</option>
+          <option value="organization">🏢 Organization / NGO</option>
+        </select>
+        <div *ngIf="role?.invalid && role?.touched"
+             style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">
+          Please select a role.
+        </div>
+      </div>
+
+      <!-- Submit -->
+      <button
+        id="reg-submit"
+        type="submit"
+        class="btn-success"
+        style="margin-top: 16px;"
+        [disabled]="isLoading"
+      >
+        <span *ngIf="!isLoading">Register Account <i class="material-icons">how_to_reg</i></span>
+        <span *ngIf="isLoading">Creating account... ⏳</span>
+      </button>
+
+      <div style="text-align: center; margin-top: 16px; font-size: 1.1rem;">
+        Already registered?
+        <a routerLink="/login" style="color: var(--color-blue); text-decoration: none; font-weight: 500;">
+          Sign in here 🔑
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
