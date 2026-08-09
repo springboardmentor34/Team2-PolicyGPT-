@@ -47,3 +47,39 @@ def delete_policy(db: Session, policy_id: int):
     db.commit()
 
     return db_policy
+
+
+def search_policies(
+    db: Session,
+    keyword: str | None = None,
+    category: str | None = None,
+    state: str | None = None,
+    status: str | None = None
+):
+    from sqlalchemy import or_
+
+    query = db.query(Policy)
+
+    if keyword:
+        search = f"%{keyword}%"
+        query = query.filter(
+            or_(
+                Policy.title.ilike(search),
+                Policy.description.ilike(search),
+                Policy.category.ilike(search),
+                Policy.department.ilike(search),
+                Policy.state.ilike(search),
+                Policy.status.ilike(search)
+            )
+        )
+
+    if category and category != "All":
+        query = query.filter(Policy.category.ilike(category))
+
+    if state and state != "All":
+        query = query.filter(Policy.state.ilike(state))
+
+    if status and status != "All":
+        query = query.filter(Policy.status.ilike(status))
+
+    return query.all()

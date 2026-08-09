@@ -9,6 +9,7 @@ from app.services.scheme_service import (
     get_scheme_by_id_service,
     update_scheme_service,
     delete_scheme_service,
+    search_schemes_service
 )
 
 router = APIRouter(
@@ -25,6 +26,22 @@ def create_scheme(scheme: SchemeCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[SchemeResponse])
 def get_all_schemes(db: Session = Depends(get_db)):
     return get_all_schemes_service(db)
+
+@router.get("/search", response_model=list[SchemeResponse])
+def search_schemes(
+    keyword: str | None = None,
+    category: str | None = None,
+    state: str | None = None,
+    status: str | None = None,
+    db: Session = Depends(get_db)
+):
+    return search_schemes_service(
+        db,
+        keyword=keyword,
+        category=category,
+        state=state,
+        status=status
+    )
 
 
 @router.get("/{scheme_id}", response_model=SchemeResponse)

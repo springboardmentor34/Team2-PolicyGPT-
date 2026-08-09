@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 
 from app.models.scheme import Scheme
 from app.schemas.scheme import SchemeCreate, SchemeUpdate
+from sqlalchemy import or_
 
 
 def create_scheme(db: Session, scheme: SchemeCreate):
@@ -47,3 +48,35 @@ def delete_scheme(db: Session, scheme_id: int):
     db.commit()
 
     return db_scheme
+def search_schemes(
+    db: Session,
+    keyword: str | None = None,
+    category: str | None = None,
+    state: str | None = None,
+    status: str | None = None
+):
+    query = db.query(Scheme)
+
+    if keyword:
+        search = f"%{keyword}%"
+        query = query.filter(
+            or_(
+                Scheme.title.ilike(search),
+                Scheme.description.ilike(search),
+                Scheme.category.ilike(search),
+                Scheme.department.ilike(search),
+                Scheme.state.ilike(search),
+                Scheme.status.ilike(search)
+            )
+        )
+
+    if category and category != "All":
+        query = query.filter(Scheme.category.ilike(category))
+
+    if state and state != "All":
+        query = query.filter(Scheme.state.ilike(state))
+
+    if status and status != "All":
+        query = query.filter(Scheme.status.ilike(status))
+
+    return query.all()

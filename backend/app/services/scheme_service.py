@@ -6,8 +6,10 @@ from app.repositories.scheme_repository import (
     get_scheme_by_id,
     update_scheme,
     delete_scheme,
+    search_schemes,
 )
 from app.schemas.scheme import SchemeCreate, SchemeUpdate
+
 
 
 def create_scheme_service(db: Session, scheme: SchemeCreate):
@@ -28,3 +30,19 @@ def update_scheme_service(db: Session, scheme_id: int, scheme: SchemeUpdate):
 
 def delete_scheme_service(db: Session, scheme_id: int):
     return delete_scheme(db, scheme_id)
+
+
+def search_schemes_service(
+    db: Session,
+    keyword: str | None = None,
+    category: str | None = None,
+    state: str | None = None,
+    status: str | None = None
+):
+    return search_schemes(
+        db,
+        keyword=keyword,
+        category=category,
+        state=state,
+        status=status
+    )

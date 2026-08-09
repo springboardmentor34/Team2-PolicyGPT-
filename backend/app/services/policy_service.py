@@ -6,6 +6,7 @@ from app.repositories.policy_repository import (
     get_policy_by_id,
     update_policy,
     delete_policy,
+    search_policies,
 )
 from app.schemas.policy import PolicyCreate, PolicyUpdate
 
@@ -28,3 +29,19 @@ def update_policy_service(db: Session, policy_id: int, policy: PolicyUpdate):
 
 def delete_policy_service(db: Session, policy_id: int):
     return delete_policy(db, policy_id)
+
+
+def search_policies_service(
+    db: Session,
+    keyword: str | None = None,
+    category: str | None = None,
+    state: str | None = None,
+    status: str | None = None
+):
+    return search_policies(
+        db,
+        keyword=keyword,
+        category=category,
+        state=state,
+        status=status
+    )

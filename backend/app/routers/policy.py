@@ -9,6 +9,7 @@ from app.services.policy_service import (
     get_policy_by_id_service,
     update_policy_service,
     delete_policy_service,
+    search_policies_service,
 )
 
 router = APIRouter(
@@ -25,6 +26,23 @@ def create_policy(policy: PolicyCreate, db: Session = Depends(get_db)):
 @router.get("/", response_model=list[PolicyResponse])
 def get_all_policies(db: Session = Depends(get_db)):
     return get_all_policies_service(db)
+
+
+@router.get("/search", response_model=list[PolicyResponse])
+def search_policies(
+    keyword: str | None = None,
+    category: str | None = None,
+    state: str | None = None,
+    status: str | None = None,
+    db: Session = Depends(get_db)
+):
+    return search_policies_service(
+        db,
+        keyword=keyword,
+        category=category,
+        state=state,
+        status=status
+    )
 
 
 @router.get("/{policy_id}", response_model=PolicyResponse)
