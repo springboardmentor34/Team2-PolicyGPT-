@@ -1,3 +1,24 @@
+# ---------------------------------------------------------------------------
+# Monkeypatch bcrypt/passlib compatibility for Python 3.12+ / bcrypt 5.0.0+
+# ---------------------------------------------------------------------------
+try:
+    import bcrypt
+    if not hasattr(bcrypt, "__about__"):
+        class DummyAbout:
+            __version__ = getattr(bcrypt, "__version__", "4.0.0")
+        bcrypt.__about__ = DummyAbout()
+    
+    _orig_hashpw = bcrypt.hashpw
+    def _patched_hashpw(password, salt):
+        if isinstance(password, str):
+            password = password.encode('utf-8')
+        if password and len(password) > 72:
+            password = password[:72]
+        return _orig_hashpw(password, salt)
+    bcrypt.hashpw = _patched_hashpw
+except ImportError:
+    pass
+
 from datetime import datetime, timedelta
 from typing import Optional
 

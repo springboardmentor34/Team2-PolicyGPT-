@@ -27,6 +27,62 @@ from app.routers.report import router as report_router
 # Create all database tables
 Base.metadata.create_all(bind=engine)
 
+# Dynamically apply table schema modifications if table already exists (for PostgreSQL compatibility)
+def run_migrations():
+    from sqlalchemy import text
+    try:
+        with engine.connect() as conn:
+            # policies table adjustments
+            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES users(id);"))
+            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_by INTEGER REFERENCES users(id);"))
+            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS review_comment TEXT;"))
+            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITHOUT TIME ZONE;"))
+            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP WITHOUT TIME ZONE;"))
+            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITHOUT TIME ZONE;"))
+            
+            # audit_logs table adjustments
+            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS old_status VARCHAR;"))
+            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS new_status VARCHAR;"))
+            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS comment TEXT;"))
+            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS policy_id INTEGER REFERENCES policies(id);"))
+            conn.commit()
+
+            # Seed developer test users if they don't exist
+            from app.database.database import SessionLocal
+            from app.models.user import User
+            from app.auth.security import hash_password
+            
+            db = SessionLocal()
+            try:
+                seed_users = [
+                    {"email": "official@policygpt.gov.in", "password": "Password123", "full_name": "Official Administrator", "role": "government_official"},
+                    {"email": "admin@policygpt.gov.in", "password": "Password123", "full_name": "Main Administrator", "role": "administrator"},
+                    {"email": "citizen@policygpt.gov.in", "password": "Password123", "full_name": "Citizen User", "role": "citizen"}
+                ]
+                for su in seed_users:
+                    exists = db.query(User).filter(User.email == su["email"]).first()
+                    if not exists:
+                        user = User(
+                            email=su["email"],
+                            password=hash_password(su["password"]),
+                            full_name=su["full_name"],
+                            role=su["role"]
+                        )
+                        db.add(user)
+                        db.commit()
+                        print(f"Seeded user: {su['email']}")
+            except Exception as se:
+                print(f"Seeding error: {se}")
+            finally:
+                db.close()
+
+            print("Database self-healing schema migration ran successfully.")
+    except Exception as e:
+        print(f"Migration error: {e}")
+
+run_migrations()
+
+
 app = FastAPI(
     title="PolicyGPT API",
     description="Government Policy & Public Scheme Intelligence Platform",

@@ -8,6 +8,7 @@ import { Notifications } from './pages/notifications/notifications';
 import { Feedback } from './pages/feedback/feedback';
 import { Reports } from './pages/reports/reports';
 import { LandingPage } from './pages/landing-page/landing-page';
+import { PolicyApproval } from './pages/policy-approval/policy-approval';
 
 export const routes: Routes = [
   { path: 'landing', component: LandingPage },
@@ -15,9 +16,12 @@ export const routes: Routes = [
   { path: 'register', component: Registration },
   { path: 'dashboard', component: CitizenDashboard },
   { path: 'policies', component: PolicyList },
+  { path: 'approval', component: PolicyApproval },
+  { path: 'policy-approval', component: PolicyApproval },
   { path: 'schemes', component: SchemeList },
   { path: 'notifications', component: Notifications },
   { path: 'feedback', component: Feedback },
   { path: 'reports', component: Reports },
   { path: '', redirectTo: '/landing', pathMatch: 'full' }
 ];
+

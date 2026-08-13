@@ -1,85 +1,826 @@
-<div style="max-width: 1400px; margin: 0 auto;">
-  
-  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center;">
+<div style="max-width: 1400px; margin: 0 auto; padding-bottom: 60px;">
+
+  <div class="glass-container"
+    style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center; border-radius: 16px;">
     <div>
-      <h2 style="color: var(--color-blue); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
+      <h2
+        style="color: var(--color-blue); margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; font-weight: 700;">
         <i class="material-icons">policy</i> Government Policies
       </h2>
-      <p style="color: var(--color-text-muted); margin: 0;">Browse, search, and manage official government policies.</p>
+      <p *ngIf="currentUser?.role?.toUpperCase() === 'CITIZEN'"
+        style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
+        Browse and search official published government policies.
+      </p>
+      <p *ngIf="currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL'"
+        style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
+        Create, edit, and transition your draft policies through the approval workflow stages.
+      </p>
+      <p *ngIf="currentUser?.role?.toUpperCase() === 'ADMINISTRATOR'"
+        style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
+        Browse and manage policies in all states of the approval lifecycle.
+      </p>
     </div>
-    <button class="btn-primary" (click)="toggleForm()">
-      <i class="material-icons">{{ showForm ? 'close' : 'add' }}</i> 
+    <button *ngIf="currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL'" class="btn-primary"
+      (click)="toggleForm()" style="padding: 10px 20px; font-size: 1rem; border-radius: 8px;">
+      <i class="material-icons">{{ showForm ? 'close' : 'add' }}</i>
       {{ showForm ? 'Cancel' : 'Create Policy' }}
     </button>
   </div>
 
-  <div *ngIf="showForm" class="glass-container" style="margin-bottom: 32px; border-left: 4px solid var(--color-green);">
-    <h3 style="margin-top: 0;">{{ isEditing ? 'Edit Policy' : 'Create New Policy' }}</h3>
-    <form [formGroup]="policyForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 16px;">
-      
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-        <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Title *</label>
-          <input type="text" class="fog-input" formControlName="title" placeholder="Policy Title">
-        </div>
-        <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Category</label>
-          <input type="text" class="fog-input" formControlName="category" placeholder="e.g. Education, Health">
-        </div>
-        <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Department</label>
-          <input type="text" class="fog-input" formControlName="department" placeholder="e.g. Ministry of Finance">
-        </div>
-        <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Status</label>
-          <select class="fog-input" formControlName="status">
-            <option value="Draft">Draft</option>
-            <option value="Published">Published</option>
-            <option value="Archived">Archived</option>
-          </select>
+  <!-- Multi-Section Policy Form -->
+  <div *ngIf="showForm && currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL'" class="glass-container slide-up"
+    style="margin-bottom: 32px; border-left: 6px solid var(--color-saffron); border-radius: 16px; padding: 24px;">
+    <h3
+      style="margin-top: 0; color: var(--color-saffron); font-size: 1.4rem; font-weight: bold; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 24px;">
+      {{ isEditing ? 'Edit Policy' : 'Create New Policy' }}
+    </h3>
+    <form [formGroup]="policyForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 24px;">
+
+      <!-- SECTION 1 -->
+      <div
+        style="background: rgba(255, 255, 255, 0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <h4
+          style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">info</i> Section 1: Basic Policy Information
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Policy Title
+              *</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="title"
+              placeholder="e.g. National Education Policy 2026">
+            <div *ngIf="policyForm.get('title')?.touched && policyForm.get('title')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Policy title is required.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Policy Type
+              *</label>
+            <select class="fog-input" style="padding: 12px;" formControlName="type">
+              <option value="" disabled selected>Select Type</option>
+              <option value="National Policy">National Policy</option>
+              <option value="State Policy">State Policy</option>
+              <option value="Government Scheme Policy">Government Scheme Policy</option>
+              <option value="Regulatory Policy">Regulatory Policy</option>
+              <option value="Welfare Policy">Welfare Policy</option>
+              <option value="Economic Policy">Economic Policy</option>
+              <option value="Education Policy">Education Policy</option>
+              <option value="Healthcare Policy">Healthcare Policy</option>
+              <option value="Agriculture Policy">Agriculture Policy</option>
+              <option value="Employment Policy">Employment Policy</option>
+              <option value="Environmental Policy">Environmental Policy</option>
+              <option value="Digital Governance Policy">Digital Governance Policy</option>
+              <option value="Infrastructure Policy">Infrastructure Policy</option>
+              <option value="Social Welfare Policy">Social Welfare Policy</option>
+            </select>
+            <div *ngIf="policyForm.get('type')?.touched && policyForm.get('type')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Please select a policy type.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Policy Category
+              *</label>
+            <select class="fog-input" style="padding: 12px;" formControlName="category">
+              <option value="" disabled selected>Select Category</option>
+              <option value="Education">Education</option>
+              <option value="Healthcare">Healthcare</option>
+              <option value="Agriculture">Agriculture</option>
+              <option value="Employment">Employment</option>
+              <option value="Finance">Finance</option>
+              <option value="Women & Child Welfare">Women & Child Welfare</option>
+              <option value="Housing">Housing</option>
+              <option value="Environment">Environment</option>
+              <option value="Digital Governance">Digital Governance</option>
+              <option value="Infrastructure">Infrastructure</option>
+              <option value="Social Security">Social Security</option>
+              <option value="Skill Development">Skill Development</option>
+              <option value="Rural Development">Rural Development</option>
+              <option value="Urban Development">Urban Development</option>
+            </select>
+            <div *ngIf="policyForm.get('category')?.touched && policyForm.get('category')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Please select a policy category.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Sub
+              Category</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="sub_category"
+              placeholder="e.g. Higher Education">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Ministry /
+              Department *</label>
+            <select class="fog-input" style="padding: 12px;" formControlName="ministry">
+              <option value="" disabled selected>Select Ministry</option>
+              <option value="Ministry of Education">Ministry of Education</option>
+              <option value="Ministry of Health & Family Welfare">Ministry of Health & Family Welfare</option>
+              <option value="Ministry of Agriculture & Farmers Welfare">Ministry of Agriculture & Farmers Welfare
+              </option>
+              <option value="Ministry of Finance">Ministry of Finance</option>
+              <option value="Ministry of Rural Development">Ministry of Rural Development</option>
+              <option value="Ministry of Housing & Urban Affairs">Ministry of Housing & Urban Affairs</option>
+              <option value="Ministry of Electronics & Information Technology">Ministry of Electronics & Information
+                Technology</option>
+              <option value="Ministry of Women & Child Development">Ministry of Women & Child Development</option>
+              <option value="Ministry of Labour & Employment">Ministry of Labour & Employment</option>
+              <option value="Ministry of Environment, Forest and Climate Change">Ministry of Environment, Forest and
+                Climate Change</option>
+            </select>
+            <div *ngIf="policyForm.get('ministry')?.touched && policyForm.get('ministry')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Ministry/Department is required.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Specific
+              Department</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="department"
+              placeholder="e.g. Dept of Higher Education">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Policy Code / Ref
+              Number</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="policy_code"
+              placeholder="e.g. NEP-2026-EDUN">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Version</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="version"
+              placeholder="e.g. 1.0.0">
+          </div>
         </div>
       </div>
 
-      <button type="submit" class="btn-success" [disabled]="isLoading || policyForm.invalid" style="width: max-content;">
-        <span *ngIf="!isLoading">{{ isEditing ? 'Update Policy' : 'Save Policy' }} <i class="material-icons">save</i></span>
+      <!-- SECTION 2 -->
+      <div
+        style="background: rgba(255, 255, 255, 0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <h4
+          style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">description</i> Section 2: Policy Purpose &
+          Technical Details
+        </h4>
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Executive Summary
+              *</label>
+            <textarea class="fog-input" style="padding: 12px;" formControlName="executive_summary" rows="3"
+              placeholder="Brief summary of policy goals..."></textarea>
+            <div *ngIf="policyForm.get('executive_summary')?.touched && policyForm.get('executive_summary')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Executive summary is required.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Purpose *</label>
+            <textarea class="fog-input" style="padding: 12px;" formControlName="purpose" rows="3"
+              placeholder="Identify the core purpose and intent..."></textarea>
+            <div *ngIf="policyForm.get('purpose')?.touched && policyForm.get('purpose')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Policy purpose is required.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Problem Addressed
+              *</label>
+            <textarea class="fog-input" style="padding: 12px;" formControlName="problem_addressed" rows="3"
+              placeholder="Describe the problem this policy aims to solve..."></textarea>
+            <div *ngIf="policyForm.get('problem_addressed')?.touched && policyForm.get('problem_addressed')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Problem addressed statement is required.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Objectives
+              *</label>
+            <textarea class="fog-input" style="padding: 12px;" formControlName="objectives" rows="3"
+              placeholder="List the specific policy objectives..."></textarea>
+            <div *ngIf="policyForm.get('objectives')?.touched && policyForm.get('objectives')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Policy objectives are required.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Implementation
+              Strategy</label>
+            <textarea class="fog-input" style="padding: 12px;" formControlName="implementation_strategy" rows="2"
+              placeholder="Strategy details..."></textarea>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Expected Outcomes &
+              Use Cases</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <textarea class="fog-input" style="padding: 12px;" formControlName="expected_outcomes" rows="2"
+                placeholder="Expected Outcomes..."></textarea>
+              <textarea class="fog-input" style="padding: 12px;" formControlName="use_cases" rows="2"
+                placeholder="Use Cases..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 3 -->
+      <div
+        style="background: rgba(255, 255, 255, 0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <h4
+          style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">group</i> Section 3: Target Beneficiaries
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">
+              Primary Beneficiary Category * <span
+                style="font-size: 0.8rem; color: var(--color-blue); font-weight: normal;">(Hold Ctrl/Cmd to select
+                multiple)</span>
+            </label>
+            <select multiple class="fog-input" style="padding: 12px; height: 120px;"
+              formControlName="primary_beneficiary_category">
+              <option value="Students">Students</option>
+              <option value="Farmers">Farmers</option>
+              <option value="Women">Women</option>
+              <option value="Children">Children</option>
+              <option value="Senior Citizens">Senior Citizens</option>
+              <option value="Persons with Disabilities">Persons with Disabilities</option>
+              <option value="Unemployed Youth">Unemployed Youth</option>
+              <option value="Government Employees">Government Employees</option>
+              <option value="Small Businesses">Small Businesses</option>
+              <option value="Entrepreneurs">Entrepreneurs</option>
+              <option value="Low Income Families">Low Income Families</option>
+              <option value="Rural Population">Rural Population</option>
+              <option value="Urban Population">Urban Population</option>
+              <option value="General Citizens">General Citizens</option>
+              <option value="Educational Institutions">Educational Institutions</option>
+              <option value="Healthcare Workers">Healthcare Workers</option>
+              <option value="NGOs">NGOs</option>
+              <option value="Other">Other</option>
+            </select>
+            <div
+              *ngIf="policyForm.get('primary_beneficiary_category')?.touched && policyForm.get('primary_beneficiary_category')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Please specify the primary beneficiary category.
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Secondary
+              Beneficiary Categories</label>
+            <input type="text" class="fog-input" style="padding: 12px;"
+              formControlName="secondary_beneficiary_categories" placeholder="e.g. Rural Communities, Startups">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Estimated
+              Beneficiary Count</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="estimated_beneficiary_count"
+              placeholder="e.g. 50 Million">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Geographical
+              Coverage *</label>
+            <select class="fog-input" style="padding: 12px;" formControlName="geographical_coverage">
+              <option value="" disabled selected>Select Coverage</option>
+              <option value="National">National</option>
+              <option value="State">State</option>
+              <option value="Selected Regions">Selected Regions</option>
+              <option value="District">District</option>
+              <option value="Local">Local</option>
+            </select>
+            <div
+              *ngIf="policyForm.get('geographical_coverage')?.touched && policyForm.get('geographical_coverage')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Please select a geographical coverage choice.
+            </div>
+          </div>
+          <div *ngIf="policyForm.get('geographical_coverage')?.value === 'State'">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">State / UT Scope
+              *</label>
+            <select class="fog-input" style="padding: 12px;" formControlName="state_region">
+              <option value="" disabled selected>Select State / UT</option>
+              <option *ngFor="let state of states" [value]="state">{{ state }}</option>
+            </select>
+            <div *ngIf="policyForm.get('state_region')?.touched && policyForm.get('state_region')?.invalid"
+              style="color: red; font-size: 0.85rem; margin-top: 4px;">
+              Please select a State or Union Territory.
+            </div>
+          </div>
+          <div *ngIf="policyForm.get('geographical_coverage')?.value !== 'State'">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">State / Region
+              Scope</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="state_region"
+              placeholder="e.g. Bihar, PAN India">
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 4 -->
+      <div
+        style="background: rgba(255, 255, 255, 0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <h4
+          style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">lightbulb</i> Section 4: Policy Innovation &
+          Unique Value
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Key
+              Innovation</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="key_innovation"
+              placeholder="Unique methodology, systems, etc.">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Unique
+              Benefits</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="unique_benefits"
+              placeholder="Benefits provided">
+          </div>
+          <div style="grid-column: span 2;">
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Difference from
+              Existing Policies</label>
+            <textarea class="fog-input" style="padding: 12px;" formControlName="difference" rows="2"
+              placeholder="How does this policy differ?"></textarea>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Expected Social
+              Impact</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="social_impact"
+              placeholder="Social welfare impacts">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Technology &
+              Sustainability</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" class="fog-input" style="padding: 12px;" formControlName="technology_used"
+                placeholder="Technology">
+              <input type="text" class="fog-input" style="padding: 12px;" formControlName="sustainability_approach"
+                placeholder="Sustainability">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 5 -->
+      <div
+        style="background: rgba(255, 255, 255, 0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <h4
+          style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">settings</i> Section 5: Implementation &
+          Governance
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Start & End
+              Dates</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="date" class="fog-input" style="padding: 12px;" formControlName="start_date">
+              <input type="date" class="fog-input" style="padding: 12px;" formControlName="end_date">
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Implementing
+              Authority</label>
+            <input type="text" class="fog-input" style="padding: 12px;" formControlName="authority"
+              placeholder="e.g. AICTE, State Boards">
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Estimated Budget &
+              Funding</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" class="fog-input" style="padding: 12px;" formControlName="budget" placeholder="Budget">
+              <input type="text" class="fog-input" style="padding: 12px;" formControlName="funding_source"
+                placeholder="Source">
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Phases & Review
+              Frequency</label>
+            <div style="display: flex; gap: 8px;">
+              <input type="text" class="fog-input" style="padding: 12px;" formControlName="phases"
+                placeholder="e.g. Phase 1: Pilot">
+              <select class="fog-input" style="padding: 12px;" formControlName="review_frequency">
+                <option value="">Select Frequency</option>
+                <option value="Monthly">Monthly</option>
+                <option value="Quarterly">Quarterly</option>
+                <option value="Half-Yearly">Half-Yearly</option>
+                <option value="Yearly">Yearly</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECTION 6 -->
+      <div
+        style="background: rgba(255, 255, 255, 0.4); padding: 20px; border-radius: 12px; border: 1px solid var(--glass-border);">
+        <h4
+          style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">link</i> Section 6: Policy Document Reference
+          URL
+        </h4>
+        <div>
+          <label style="display: block; margin-bottom: 6px; font-weight: 600; font-size: 0.95rem;">Official Document URL
+            / Reference Path</label>
+          <input type="text" class="fog-input" style="padding: 12px;" formControlName="document_url"
+            placeholder="e.g. https://www.education.gov.in/sites/upload_files/mhrd/files/NEP_Final_English_0.pdf">
+          <small style="color: var(--color-text-muted); display: block; margin-top: 4px;">Provides reference link
+            validation for policy downloads.</small>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-success" [disabled]="isLoading || policyForm.invalid"
+        style="width: max-content; padding: 12px 32px; border-radius: 8px;">
+        <span *ngIf="!isLoading" style="display: flex; align-items: center; gap: 8px;">
+          {{ isEditing ? 'Update Policy' : 'Save Policy' }} <i class="material-icons">save</i>
+        </span>
         <span *ngIf="isLoading">Saving... ⏳</span>
       </button>
     </form>
   </div>
 
-  <div style="display: flex; flex-direction: column; gap: 16px;">
-    <div *ngIf="policies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 40px;">
-      No policies found. Create one to get started!
+  <!-- Policies List -->
+  <div style="display: flex; flex-direction: column; gap: 20px;">
+    <div *ngIf="policies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 60px;"
+      class="glass-container">
+      <i class="material-icons" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 12px;">inbox</i>
+      <div style="font-size: 1.2rem; font-weight: 600;">No policies found.</div>
+      <p style="margin: 8px 0 0 0;">Create a new policy using the "Create Policy" button above to get started.</p>
     </div>
 
-    <div *ngFor="let policy of policies" class="glass-container" style="padding: 24px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--color-saffron);">
-      
-      <div style="display: flex; align-items: center; gap: 24px;">
-        <div style="background: rgba(255,153,51,0.1); padding: 16px; border-radius: 50%;">
-          <i class="material-icons" style="font-size: 2rem; color: var(--color-saffron);">article</i>
+    <div *ngFor="let policy of policies" class="glass-container slide-up"
+      [ngStyle]="{'border-left': '6px solid ' + (policy.status === 'PUBLISHED' ? 'var(--color-green)' : policy.status === 'APPROVED' ? '#2196f3' : policy.status === 'REJECTED' ? 'red' : policy.status === 'PENDING_APPROVAL' ? '#ff9800' : 'var(--color-saffron)')}"
+      style="padding: 24px; display: flex; flex-direction: column; gap: 16px; border-radius: 16px;">
+
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 24px;">
+        <div style="display: flex; align-items: flex-start; gap: 20px;">
+          <div
+            style="background: rgba(255,153,51,0.1); padding: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; min-width: 56px;">
+            <i class="material-icons" style="font-size: 2.2rem; color: var(--color-saffron);">article</i>
+          </div>
+          <div>
+            <h3
+              style="margin: 0 0 8px 0; font-size: 1.35rem; color: var(--color-blue); font-weight: 700; line-height: 1.3;">
+              {{ policy.title }}
+            </h3>
+
+            <p *ngIf="policy.description"
+              style="color: var(--color-text); margin: 0 0 16px 0; font-size: 1rem; line-height: 1.5; white-space: pre-line; max-height: 80px; overflow: hidden; text-overflow: ellipsis; display: -webkit-box; -webkit-line-clamp: 3; line-clamp: 3; -webkit-box-orient: vertical;">
+              {{ getSnippet(policy) }}
+            </p>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; color: var(--color-text-muted); font-size: 0.9rem;">
+              <span *ngIf="policy.category"
+                style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.04); padding: 4px 8px; border-radius: 4px;">
+                <i class="material-icons" style="font-size: 1rem;">category</i> {{ policy.category }}
+              </span>
+              <span *ngIf="policy.department"
+                style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.04); padding: 4px 8px; border-radius: 4px;">
+                <i class="material-icons" style="font-size: 1rem;">account_balance</i> {{ policy.department }}
+              </span>
+              <span *ngIf="policy.state"
+                style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.04); padding: 4px 8px; border-radius: 4px;">
+                <i class="material-icons" style="font-size: 1rem;">map</i> {{ policy.state }}
+              </span>
+              <span
+                style="display: flex; align-items: center; gap: 4px; background: rgba(0,0,0,0.04); padding: 4px 8px; border-radius: 4px;">
+                <i class="material-icons" style="font-size: 1rem;">calendar_today</i>
+                {{ (policy.published_at || policy.created_at) | date:'mediumDate' }}
+              </span>
+            </div>
+
+            <!-- Rejection comment banner -->
+            <div *ngIf="policy.status === 'REJECTED' && policy.review_comment"
+              style="margin-top: 16px; padding: 12px; background: rgba(244,67,54,0.05); border-left: 4px solid red; border-radius: 8px;">
+              <strong
+                style="color: red; display: flex; align-items: center; gap: 4px; margin-bottom: 4px; font-size: 0.95rem;">
+                <i class="material-icons" style="font-size: 1.1rem;">feedback</i> Administrator Review Comment:
+              </strong>
+              <span style="font-style: italic; font-size: 0.95rem; color: var(--color-text);">"{{ policy.review_comment
+                }}"</span>
+            </div>
+          </div>
         </div>
-        <div>
-          <h3 style="margin: 0 0 8px 0; font-size: 1.4rem;">{{ policy.title }}</h3>
-          <div style="display: flex; gap: 16px; color: var(--color-text-muted); font-size: 1rem;">
-            <span *ngIf="policy.category"><i class="material-icons" style="font-size: 1.1rem; vertical-align: bottom;">category</i> {{ policy.category }}</span>
-            <span *ngIf="policy.department"><i class="material-icons" style="font-size: 1.1rem; vertical-align: bottom;">account_balance</i> {{ policy.department }}</span>
-            <span><i class="material-icons" style="font-size: 1.1rem; vertical-align: bottom;">calendar_today</i> {{ policy.created_at | date:'mediumDate' }}</span>
+
+        <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 12px; min-width: 180px;">
+          <!-- Status Tag -->
+          <span [ngStyle]="{
+            'background': policy.status === 'PUBLISHED' ? 'rgba(19, 136, 8, 0.15)' : 
+                         policy.status === 'APPROVED' ? 'rgba(33, 150, 243, 0.15)' : 
+                         policy.status === 'REJECTED' ? 'rgba(244, 67, 54, 0.15)' : 
+                         policy.status === 'PENDING_APPROVAL' ? 'rgba(255, 193, 7, 0.15)' : 'rgba(158, 158, 158, 0.15)', 
+            'color': policy.status === 'PUBLISHED' ? 'var(--color-green)' : 
+                     policy.status === 'APPROVED' ? '#2196f3' : 
+                     policy.status === 'REJECTED' ? 'red' : 
+                     policy.status === 'PENDING_APPROVAL' ? '#ff9800' : '#757575'
+          }"
+            style="padding: 6px 14px; border-radius: 12px; font-weight: 700; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; border: 1px solid currentColor;">
+            ● {{ (policy.status || 'DRAFT') | uppercase }}
+          </span>
+
+          <button class="btn-primary" (click)="viewDetails(policy)"
+            style="background: var(--color-blue); border: none; padding: 8px 16px; font-size: 0.9rem; border-radius: 8px; display: flex; align-items: center; gap: 6px; box-shadow: none;">
+            <i class="material-icons" style="font-size: 1.1rem;">visibility</i> View Details
+          </button>
+
+          <div *ngIf="policy.status === 'PENDING_APPROVAL'"
+            style="font-size: 0.85rem; color: #ff9800; font-style: italic; display: flex; align-items: center; gap: 4px;">
+            <i class="material-icons" style="font-size: 1rem;">hourglass_empty</i> Waiting for Administrator Review
+          </div>
+          <div *ngIf="policy.status === 'APPROVED'"
+            style="font-size: 0.85rem; color: #2196f3; font-style: italic; display: flex; align-items: center; gap: 4px;">
+            <i class="material-icons" style="font-size: 1rem;">check_circle</i> Approved – Awaiting Publication
+          </div>
+          <div *ngIf="policy.status === 'PUBLISHED'"
+            style="font-size: 0.85rem; color: var(--color-green); font-style: italic; display: flex; align-items: center; gap: 4px;">
+            <i class="material-icons" style="font-size: 1rem;">check_circle</i> Published
           </div>
         </div>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 16px;">
-        <span [ngStyle]="{'background': policy.status === 'Published' ? 'rgba(19,136,8,0.2)' : 'rgba(255,153,51,0.2)', 'color': policy.status === 'Published' ? 'var(--color-green)' : 'var(--color-saffron)'}" style="padding: 8px 16px; border-radius: 20px; font-weight: 500;">
-          {{ policy.status || 'Draft' }}
-        </span>
-        <button class="btn-primary" style="padding: 10px; min-width: 40px;" (click)="editPolicy(policy)">
-          <i class="material-icons">edit</i>
+      <!-- Operations Row for Government Official owners -->
+      <div *ngIf="currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL'"
+        style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid var(--glass-border); padding-top: 16px; margin-top: 8px;">
+        <button *ngIf="policy.status === 'DRAFT' || policy.status === 'REJECTED'" class="btn-primary"
+          (click)="editPolicy(policy)"
+          style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-size: 0.95rem; border-radius: 8px;">
+          <i class="material-icons" style="font-size: 1.1rem;">edit</i> Edit
         </button>
-        <button class="btn-primary" style="padding: 10px; min-width: 40px; background: rgba(255,0,0,0.1); color: red; border: 1px solid rgba(255,0,0,0.2);" (click)="deletePolicy(policy.id)">
-          <i class="material-icons">delete</i>
+        <button *ngIf="policy.status === 'DRAFT'" class="btn-success" (click)="submitForApproval(policy.id)"
+          style="display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-size: 0.95rem; border-radius: 8px;">
+          <i class="material-icons" style="font-size: 1.1rem;">send</i> Submit for Approval
+        </button>
+        <button *ngIf="policy.status === 'REJECTED'" class="btn-success" (click)="resubmitForApproval(policy)"
+          style="background: linear-gradient(135deg, var(--color-green), #0a5f05); display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-size: 0.95rem; border-radius: 8px;">
+          <i class="material-icons" style="font-size: 1.1rem;">autorenew</i> Resubmit for Approval
+        </button>
+        <button *ngIf="policy.status === 'DRAFT'" class="btn-primary" (click)="deletePolicy(policy.id)"
+          style="background: rgba(255,0,0,0.08); color: red; border: 1px solid rgba(255,0,0,0.15); display: flex; align-items: center; gap: 6px; padding: 10px 18px; font-size: 0.95rem; border-radius: 8px; box-shadow: none;">
+          <i class="material-icons" style="font-size: 1.1rem;">delete</i> Delete
         </button>
       </div>
 
     </div>
   </div>
+
+  <!-- Detail Modal Dialog -->
+  <div *ngIf="showDetailsDialog" class="modal-backdrop"
+    style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(8px);">
+    <div class="modal-card"
+      [style.border-top]="'6px solid ' + (selectedPolicyForDetails?.status === 'PUBLISHED' ? 'var(--color-green)' : selectedPolicyForDetails?.status === 'APPROVED' ? '#2196f3' : selectedPolicyForDetails?.status === 'REJECTED' ? 'red' : selectedPolicyForDetails?.status === 'PENDING_APPROVAL' ? '#ff9800' : 'var(--color-saffron)')"
+      style="background: var(--color-white); border-radius: 16px; width: 90%; max-width: 900px; max-height: 85vh; overflow-y: auto; padding: 32px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); border-right: 1px solid var(--glass-border); border-left: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border);">
+
+      <div
+        style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #eee; padding-bottom: 16px; margin-bottom: 24px;">
+        <div>
+          <span
+            style="font-size: 0.85rem; color: var(--color-saffron); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
+            {{ selectedDetails.type || 'Government Policy' }}
+          </span>
+          <h3
+            style="margin: 4px 0 0 0; color: var(--color-blue); font-size: 1.7rem; font-weight: 700; line-height: 1.2;">
+            {{ selectedPolicyForDetails?.title }}
+          </h3>
+        </div>
+        <button (click)="closeDetails()"
+          style="background: none; border: none; cursor: pointer; color: var(--color-text-muted);">
+          <i class="material-icons" style="font-size: 2rem;">close</i>
+        </button>
+      </div>
+
+      <!-- 15 SECTION DETAILS LAYOUT -->
+      <div style="display: flex; flex-direction: column; gap: 24px;">
+
+        <!-- Section 1: Basic Information -->
+        <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+          <h4
+            style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+            1. Basic Information
+          </h4>
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.95rem;">
+            <div><strong>Policy Code / Ref:</strong> {{ selectedDetails.policy_code || 'N/A' }}</div>
+            <div><strong>Type:</strong> {{ selectedDetails.type || 'N/A' }}</div>
+            <div><strong>Category:</strong> {{ selectedPolicyForDetails?.category || 'N/A' }}</div>
+            <div><strong>Sub Category:</strong> {{ selectedDetails.sub_category || 'N/A' }}</div>
+            <div><strong>Ministry:</strong> {{ selectedDetails.ministry || 'N/A' }}</div>
+            <div><strong>Department:</strong> {{ selectedPolicyForDetails?.department || 'N/A' }}</div>
+            <div><strong>Version:</strong> {{ selectedDetails.version || '1.0.0' }}</div>
+            <div><strong>Status:</strong>
+              <span [ngStyle]="{
+                'color': selectedPolicyForDetails?.status === 'PUBLISHED' ? 'var(--color-green)' : 
+                         selectedPolicyForDetails?.status === 'APPROVED' ? '#2196f3' : 
+                         selectedPolicyForDetails?.status === 'REJECTED' ? 'red' : 
+                         selectedPolicyForDetails?.status === 'PENDING_APPROVAL' ? '#ff9800' : '#757575'
+              }" style="font-weight:700; text-transform:uppercase;">
+                ● {{ (selectedPolicyForDetails?.status || 'DRAFT') | uppercase }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 2: Policy Purpose -->
+        <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+          <h4
+            style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+            2. Policy Purpose & Summary
+          </h4>
+          <div style="font-size: 0.95rem; line-height: 1.6; color: var(--color-text);">
+            {{ selectedDetails.executive_summary || 'Not provided' }}
+          </div>
+        </div>
+
+        <!-- Section 3 & 4 & 5 & 6 -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+          <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+            <h4
+              style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+              3. Problem Addressed
+            </h4>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: var(--color-text);">
+              {{ selectedDetails.problem_addressed || 'Not provided' }}
+            </div>
+          </div>
+          <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+            <h4
+              style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+              4. Objectives
+            </h4>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: var(--color-text);">
+              {{ selectedDetails.objectives || 'Not provided' }}
+            </div>
+          </div>
+          <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+            <h4
+              style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+              5. Implementation Strategy
+            </h4>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: var(--color-text);">
+              {{ selectedDetails.implementation_strategy || 'Not provided' }}
+            </div>
+          </div>
+          <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+            <h4
+              style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+              6. Expected Outcomes
+            </h4>
+            <div style="font-size: 0.95rem; line-height: 1.5; color: var(--color-text);">
+              <strong>Outcomes:</strong> {{ selectedDetails.expected_outcomes || 'N/A' }} <br>
+              <strong>Use Cases:</strong> {{ selectedDetails.use_cases || 'N/A' }}
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 7 & 8 & 9: Beneficiaries & Coverage -->
+        <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+          <h4
+            style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+            Target Beneficiaries & Scope
+          </h4>
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-size: 0.95rem;">
+            <div><strong>7. Primary Beneficiaries:</strong> {{
+              formatBeneficiaries(selectedDetails.primary_beneficiary_category) }}
+            </div>
+            <div><strong>Secondary Beneficiaries:</strong> {{ selectedDetails.secondary_beneficiary_categories || 'N/A'
+              }}</div>
+            <div><strong>8. Estimated Beneficiaries:</strong> {{ selectedDetails.estimated_beneficiary_count || 'N/A' }}
+            </div>
+            <div><strong>9. Geographical Coverage:</strong> {{ selectedDetails.geographical_coverage || 'N/A' }}</div>
+            <div><strong>State / Region Scope:</strong> {{ selectedPolicyForDetails?.state || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <!-- Section 10 & 11 & 12: Unique Value, Impact & Technology -->
+        <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+          <h4
+            style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+            10-12. Innovation, Impact & Technology
+          </h4>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 0.95rem;">
+            <div><strong>10. Unique Innovation:</strong> {{ selectedDetails.key_innovation || 'Not provided' }}</div>
+            <div><strong>Unique Benefits:</strong> {{ selectedDetails.unique_benefits || 'Not provided' }}</div>
+            <div><strong>Difference From Existing:</strong> {{ selectedDetails.difference || 'Not provided' }}</div>
+            <div><strong>11. Social Impact:</strong> {{ selectedDetails.social_impact || 'Not provided' }}</div>
+            <div><strong>12. Technology Used:</strong> {{ selectedDetails.technology_used || 'Not provided' }}</div>
+            <div><strong>Sustainability Approach:</strong> {{ selectedDetails.sustainability_approach || 'Not provided'
+              }}</div>
+          </div>
+        </div>
+
+        <!-- Section 13 & 14: Timeline & Governance -->
+        <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+          <h4
+            style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+            13-14. Timeline & Governance
+          </h4>
+          <div
+            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; font-size: 0.95rem;">
+            <div><strong>13. Start Date:</strong> {{ selectedDetails.start_date || 'N/A' }}</div>
+            <div><strong>End Date:</strong> {{ selectedDetails.end_date || 'N/A' }}</div>
+            <div><strong>14. Authority:</strong> {{ selectedDetails.authority || 'N/A' }}</div>
+            <div><strong>Responsible Dept:</strong> {{ selectedPolicyForDetails?.department || 'N/A' }}</div>
+            <div><strong>Estimated Budget:</strong> {{ selectedDetails.budget || 'N/A' }}</div>
+            <div><strong>Funding Source:</strong> {{ selectedDetails.funding_source || 'N/A' }}</div>
+            <div><strong>Implementation Phases:</strong> {{ selectedDetails.phases || 'N/A' }}</div>
+            <div><strong>Review Frequency:</strong> {{ selectedDetails.review_frequency || 'N/A' }}</div>
+          </div>
+        </div>
+
+        <!-- Section 15: Policy Document -->
+        <div style="background: #fbfbfb; border: 1px solid #ebebeb; border-radius: 8px; padding: 16px;">
+          <h4
+            style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem; border-bottom: 1px solid #eee; padding-bottom: 6px;">
+            15. Policy Document
+          </h4>
+          <div *ngIf="selectedDetails.document_url"
+            style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+            <span style="font-size: 0.95rem; color: var(--color-text); min-width: 250px;">
+              <strong>Reference:</strong> <a [href]="selectedDetails.document_url" target="_blank"
+                style="color: var(--color-saffron); word-break: break-all;">{{ selectedDetails.document_url }}</a>
+            </span>
+            <div style="display: flex; gap: 12px;">
+              <a [href]="selectedDetails.document_url" target="_blank" class="btn-primary"
+                style="padding: 8px 16px; font-size: 0.9rem; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; box-shadow: none;">
+                <i class="material-icons" style="font-size: 1.1rem;">visibility</i> View Policy Document
+              </a>
+              <button class="btn-success" style="padding: 8px 16px; font-size: 0.9rem; border-radius: 6px;"
+                (click)="downloadPolicy(selectedDetails.document_url)">
+                <i class="material-icons" style="font-size: 1.1rem;">file_download</i> Download Policy PDF
+              </button>
+            </div>
+          </div>
+          <div *ngIf="!selectedDetails.document_url"
+            style="color: var(--color-text-muted); font-size: 0.95rem; font-style: italic; display: flex; align-items: center; gap: 8px;">
+            <i class="material-icons" style="color: #888;">info_outline</i>
+            <span>Document not available. Reference document has not been uploaded.</span>
+          </div>
+        </div>
+
+        <!-- Audit Trail / Tracking Metadata -->
+        <div
+          style="border-top: 1px solid #eee; padding-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-size: 0.9rem; color: var(--color-text-muted);">
+          <div><strong>Created By:</strong> User ID {{ selectedPolicyForDetails?.created_by }}</div>
+          <div><strong>Created Date:</strong> {{ selectedPolicyForDetails?.created_at | date:'medium' }}</div>
+          <div><strong>Last Updated:</strong> {{ (selectedPolicyForDetails?.updated_at ||
+            selectedPolicyForDetails?.created_at) | date:'medium' }}</div>
+          <div *ngIf="selectedPolicyForDetails?.reviewed_by"><strong>Reviewed By:</strong> User ID {{
+            selectedPolicyForDetails?.reviewed_by }}</div>
+          <div *ngIf="selectedPolicyForDetails?.reviewed_at"><strong>Reviewed Date:</strong> {{
+            selectedPolicyForDetails?.reviewed_at | date:'medium' }}</div>
+          <div *ngIf="selectedPolicyForDetails?.published_at"><strong>Published Date:</strong> {{
+            selectedPolicyForDetails?.published_at | date:'medium' }}</div>
+        </div>
+
+        <!-- Approval History Timeline -->
+        <div
+          style="background: rgba(0, 0, 80, 0.03); border-radius: 12px; padding: 20px; border: 1px solid var(--glass-border);">
+          <h4
+            style="margin: 0 0 16px 0; color: var(--color-blue); font-size: 1.1rem; display: flex; align-items: center; gap: 8px;">
+            <i class="material-icons" style="color: var(--color-saffron);">history</i> Workflow Approval History / Audit
+            Logs
+          </h4>
+
+          <div *ngIf="selectedPolicyAuditLogs.length === 0"
+            style="color: var(--color-text-muted); font-size: 0.95rem; font-style: italic; padding: 12px 0;">
+            No audit logs available for this policy.
+          </div>
+
+          <div *ngIf="selectedPolicyAuditLogs.length > 0" style="display: flex; flex-direction: column; gap: 12px;">
+            <div *ngFor="let log of selectedPolicyAuditLogs"
+              style="position: relative; display: flex; gap: 16px; padding-left: 24px; border-left: 2px solid var(--color-saffron); font-size: 0.95rem; padding-bottom: 8px;">
+              <!-- Circle Dot -->
+              <span
+                style="position: absolute; left: -7px; top: 4px; width: 12px; height: 12px; border-radius: 50%; background: var(--color-blue);"></span>
+
+              <div style="width: 100%;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                  <strong style="color: var(--color-blue); text-transform: uppercase;">{{ log.action.replace('POLICY_',
+                    '') }}</strong>
+                  <span style="color: var(--color-text-muted); font-size: 0.85rem;">{{ log.timestamp | date:'medium'
+                    }}</span>
+                </div>
+                <div style="color: var(--color-text); margin-bottom: 2px;">
+                  Transitioned from <code
+                    style="background: #eee; padding: 2px 4px; border-radius: 4px;">{{ log.old_status || 'NONE' }}</code>
+                  to
+                  <code style="background: #eee; padding: 2px 4px; border-radius: 4px;">{{ log.new_status }}</code> by
+                  <strong>{{ log.user_name }}</strong> ({{ log.user_email }})
+                </div>
+                <div *ngIf="log.comment"
+                  style="color: #666; font-style: italic; margin-top: 4px; background: rgba(0,0,0,0.03); padding: 6px; border-radius: 4px; border-left: 3px solid #ccc;">
+                  "{{ log.comment }}"
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div
+        style="display: flex; justify-content: flex-end; margin-top: 24px; border-top: 1px solid #eee; padding-top: 16px;">
+        <button class="btn-primary" (click)="closeDetails()"
+          style="background: var(--color-blue); padding: 10px 24px; font-size: 1rem; border-radius: 8px;">Close</button>
+      </div>
+    </div>
+  </div>
+
 </div>

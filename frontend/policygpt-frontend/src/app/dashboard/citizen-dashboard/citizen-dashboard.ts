@@ -24,7 +24,7 @@ export class CitizenDashboard implements OnInit {
     private policyService: PolicyService,
     private schemeService: SchemeService,
     private notificationService: NotificationService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.authService.getCurrentUser().subscribe({
@@ -32,7 +32,7 @@ export class CitizenDashboard implements OnInit {
       error: (err) => console.error('Failed to get user', err)
     });
 
-    this.policyService.getPolicies().subscribe({
+    this.policyService.getPublishedPolicies().subscribe({
       next: (data) => this.recentPolicies = data.slice(0, 5),
       error: (err) => console.error(err)
     });

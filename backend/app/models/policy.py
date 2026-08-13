@@ -1,7 +1,7 @@
-from datetime import datetime
-from sqlalchemy import Column, Integer, String, Text, DateTime
-from app.database.base import Base
 from datetime import datetime, UTC
+from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
+from sqlalchemy.orm import relationship
+from app.database.base import Base
 
 
 class Policy(Base):
@@ -13,7 +13,16 @@ class Policy(Base):
     category = Column(String, nullable=True)
     department = Column(String, nullable=True)
     state = Column(String, nullable=True)
-    status = Column(String, nullable=True)
+    status = Column(String, nullable=True) # draft, pending_approval, approved, rejected, published
    
-
+    created_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    reviewed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
+    review_comment = Column(Text, nullable=True)
+    
     created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    reviewed_at = Column(DateTime, nullable=True)
+    published_at = Column(DateTime, nullable=True)
+
+    creator = relationship("User", foreign_keys=[created_by])
+    reviewer = relationship("User", foreign_keys=[reviewed_by])

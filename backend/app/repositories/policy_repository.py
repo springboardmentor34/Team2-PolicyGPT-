@@ -4,12 +4,13 @@ from app.models.policy import Policy
 from app.schemas.policy import PolicyCreate, PolicyUpdate
 
 
-def create_policy(db: Session, policy: PolicyCreate):
-    new_policy = Policy(**policy.model_dump())
+def create_policy(db: Session, policy: PolicyCreate, user_id: int = None):
+    new_policy = Policy(**policy.model_dump(), created_by=user_id)
     db.add(new_policy)
     db.commit()
     db.refresh(new_policy)
     return new_policy
+
 
 
 def get_all_policies(db: Session):
