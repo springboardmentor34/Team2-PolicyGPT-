@@ -14,6 +14,8 @@ from app.models.policy import Policy
 from app.models.audit_log import AuditLog
 
 
+from app.models.notification import Notification
+
 def log_workflow_action(
     db: Session,
     user_id: int,
@@ -34,6 +36,19 @@ def log_workflow_action(
         comment=comment
     )
     db.add(audit_record)
+
+    # Create user-facing Notification record
+    action_label = action.replace("POLICY_", "").replace("_", " ").title()
+    msg = f"Policy #{policy_id}: Action '{action_label}' status updated to {new_status}."
+    if comment:
+        msg += f" Note: {comment}"
+
+    notif = Notification(
+        user_id=user_id,
+        message=msg,
+        type=action
+    )
+    db.add(notif)
     db.commit()
 
 

@@ -10,6 +10,8 @@ export interface Scheme {
   department: string;
   state: string;
   status: string;
+  eligibility_criteria?: string;
+  benefits?: string;
   created_at: string;
 }
 

@@ -1,0 +1,153 @@
+<div style="max-width: 1200px; margin: 0 auto;">
+
+  <!-- Header Banner -->
+  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-green);">
+    <h1 style="color: var(--color-blue); font-size: 2.2rem; margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px;">
+      <i class="material-icons" style="font-size: 2.5rem; color: var(--color-green);">verified_user</i>
+      Citizen Eligibility Checker 🇮🇳
+    </h1>
+    <p style="color: var(--color-text-muted); font-size: 1.1rem; margin: 0;">
+      Enter your demographics and financial criteria to check eligibility against active government policies and schemes.
+    </p>
+  </div>
+
+  <div class="grid-cards" style="grid-template-columns: 1fr 1fr; gap: 32px; margin-bottom: 40px;">
+
+    <!-- Form Section -->
+    <div class="glass-container">
+      <h2 style="color: var(--color-saffron); font-size: 1.4rem; margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">
+        <i class="material-icons">assignment</i> Enter Your Information
+      </h2>
+
+      <form (ngSubmit)="evaluateEligibility()" style="display: flex; flex-direction: column; gap: 20px;">
+
+        <!-- Select Target Item -->
+        <div>
+          <label style="font-weight: 600; color: var(--color-text-muted); font-size: 0.95rem; display: block; margin-bottom: 8px;">
+            Target Item Type
+          </label>
+          <div style="display: flex; gap: 16px; margin-bottom: 12px;">
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+              <input type="radio" name="itemType" value="policy" [(ngModel)]="selectedItemType" (change)="selectedItemId = null">
+              Policy
+            </label>
+            <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600;">
+              <input type="radio" name="itemType" value="scheme" [(ngModel)]="selectedItemType" (change)="selectedItemId = null">
+              Scheme
+            </label>
+          </div>
+
+          <select class="fog-input" name="selectedItemId" [(ngModel)]="selectedItemId">
+            <option [ngValue]="null">-- Evaluate All Schemes / Policies --</option>
+            <ng-container *ngIf="selectedItemType === 'policy'">
+              <option *ngFor="let p of policies" [value]="p.id">{{ p.title }}</option>
+            </ng-container>
+            <ng-container *ngIf="selectedItemType === 'scheme'">
+              <option *ngFor="let s of schemes" [value]="s.id">{{ s.title }}</option>
+            </ng-container>
+          </select>
+        </div>
+
+        <!-- Age Input -->
+        <div>
+          <label style="font-weight: 600; color: var(--color-text-muted); font-size: 0.95rem; display: block; margin-bottom: 8px;">
+            Applicant Age (Years) *
+          </label>
+          <input type="number" class="fog-input" name="age" [(ngModel)]="age" placeholder="e.g. 28" required min="1" max="120">
+        </div>
+
+        <!-- Annual Income -->
+        <div>
+          <label style="font-weight: 600; color: var(--color-text-muted); font-size: 0.95rem; display: block; margin-bottom: 8px;">
+            Annual Household Income (₹) *
+          </label>
+          <input type="number" class="fog-input" name="annualIncome" [(ngModel)]="annualIncome" placeholder="e.g. 450000" required>
+        </div>
+
+        <!-- Social Category -->
+        <div>
+          <label style="font-weight: 600; color: var(--color-text-muted); font-size: 0.95rem; display: block; margin-bottom: 8px;">
+            Category
+          </label>
+          <select class="fog-input" name="category" [(ngModel)]="category">
+            <option value="General">General</option>
+            <option value="OBC">OBC (Other Backward Classes)</option>
+            <option value="SC">SC (Scheduled Caste)</option>
+            <option value="ST">ST (Scheduled Tribe)</option>
+            <option value="EWS">EWS (Economically Weaker Section)</option>
+          </select>
+        </div>
+
+        <!-- Occupation -->
+        <div>
+          <label style="font-weight: 600; color: var(--color-text-muted); font-size: 0.95rem; display: block; margin-bottom: 8px;">
+            Occupation / Employment Status
+          </label>
+          <select class="fog-input" name="occupation" [(ngModel)]="occupation">
+            <option value="Employed">Salaried / Private Employee</option>
+            <option value="Farmer">Farmer / Agriculture</option>
+            <option value="Student">Student</option>
+            <option value="Self-Employed">Self-Employed / Entrepreneur</option>
+            <option value="Unemployed">Unemployed / Job Seeker</option>
+          </select>
+        </div>
+
+        <button type="submit" class="btn-success" style="margin-top: 12px;" [disabled]="isEvaluating">
+          <i class="material-icons">fact_check</i>
+          {{ isEvaluating ? 'Evaluating Criteria...' : 'Check Eligibility Now' }}
+        </button>
+
+      </form>
+    </div>
+
+    <!-- Result Display Section -->
+    <div class="glass-container" style="display: flex; flex-direction: column; justify-content: center;">
+
+      <div *ngIf="!result && !isEvaluating" style="text-align: center; color: var(--color-text-muted); padding: 40px 20px;">
+        <i class="material-icons" style="font-size: 4rem; color: var(--color-saffron); margin-bottom: 16px;">touch_app</i>
+        <h3 style="margin-bottom: 8px; color: var(--color-blue);">Ready to Evaluate</h3>
+        <p>Fill out the form on the left and click "Check Eligibility Now" to view your customized report.</p>
+      </div>
+
+      <div *ngIf="isEvaluating" style="text-align: center; padding: 40px;">
+        <i class="material-icons" style="font-size: 3.5rem; color: var(--color-saffron); animation: spin 1.5s linear infinite;">sync</i>
+        <h3 style="margin-top: 16px; color: var(--color-blue);">Analyzing Criteria...</h3>
+      </div>
+
+      <div *ngIf="result && !isEvaluating">
+        <!-- Status Header -->
+        <div style="text-align: center; margin-bottom: 24px; padding: 20px; border-radius: 16px;"
+          [style.background]="result.isEligible ? 'var(--color-green-light)' : 'rgba(255, 99, 71, 0.15)'">
+          <i class="material-icons" style="font-size: 3.5rem;" [style.color]="result.isEligible ? 'var(--color-green)' : '#d9534f'">
+            {{ result.isEligible ? 'check_circle' : 'cancel' }}
+          </i>
+          <h2 [style.color]="result.isEligible ? 'var(--color-green)' : '#d9534f'" style="font-size: 2rem; margin: 8px 0 4px 0;">
+            {{ result.statusText }}
+          </h2>
+          <span style="font-weight: 600; color: var(--color-text);">
+            {{ result.matchedPolicyTitle }}
+          </span>
+        </div>
+
+        <!-- Evaluation Breakdown -->
+        <h3 style="color: var(--color-blue); font-size: 1.2rem; margin-bottom: 12px;">Evaluation Breakdown:</h3>
+        <ul style="list-style: none; padding: 0; margin: 0 0 24px 0; display: flex; flex-direction: column; gap: 10px;">
+          <li *ngFor="let r of result.reasons" style="padding: 12px; background: rgba(255, 255, 255, 0.4); border-radius: 10px; display: flex; align-items: flex-start; gap: 10px;">
+            <i class="material-icons" style="color: var(--color-blue); font-size: 1.2rem; margin-top: 2px;">verified</i>
+            <span style="font-size: 0.95rem; line-height: 1.4;">{{ r }}</span>
+          </li>
+        </ul>
+
+        <!-- Key Benefits -->
+        <div style="padding: 16px; background: var(--color-saffron-light); border-radius: 12px; border-left: 4px solid var(--color-saffron);">
+          <strong style="color: var(--color-saffron); display: block; margin-bottom: 4px;">Potential Citizen Benefits:</strong>
+          <span style="font-size: 0.95rem; color: var(--color-text);">{{ result.benefits }}</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>

@@ -1,11 +1,11 @@
 <div style="max-width: 1400px; margin: 0 auto;">
   
-  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center;">
+  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-saffron); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
     <div>
-      <h2 style="color: var(--color-blue); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
-        <i class="material-icons">volunteer_activism</i> Government Schemes
+      <h2 style="color: var(--color-blue); margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; font-size: 2rem;">
+        <i class="material-icons" style="font-size: 2.4rem; color: var(--color-saffron);">account_balance</i> Government Schemes Directory 🇮🇳
       </h2>
-      <p style="color: var(--color-text-muted); margin: 0;">Explore public welfare and developmental schemes.</p>
+      <p style="color: var(--color-text-muted); margin: 0; font-size: 1.1rem;">Explore public welfare, financial inclusion, housing, and developmental schemes.</p>
     </div>
     <button class="btn-primary" (click)="toggleForm()">
       <i class="material-icons">{{ showForm ? 'close' : 'add' }}</i> 
@@ -13,25 +13,27 @@
     </button>
   </div>
 
-  <div *ngIf="showForm" class="glass-container" style="margin-bottom: 32px; border-left: 4px solid var(--color-green);">
-    <h3 style="margin-top: 0;">{{ isEditing ? 'Edit Scheme' : 'Create New Scheme' }}</h3>
-    <form [formGroup]="schemeForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 16px;">
+  <div *ngIf="showForm" class="glass-container slide-up" style="margin-bottom: 32px; border-left: 6px solid var(--color-green);">
+    <h3 style="margin-top: 0; color: var(--color-green); font-size: 1.4rem; border-bottom: 1px solid var(--glass-border); padding-bottom: 12px; margin-bottom: 20px;">
+      {{ isEditing ? 'Edit Government Scheme' : 'Create New Government Scheme' }}
+    </h3>
+    <form [formGroup]="schemeForm" (ngSubmit)="onSubmit()" style="display: flex; flex-direction: column; gap: 20px;">
       
-      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
         <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Title *</label>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Title *</label>
           <input type="text" class="fog-input" formControlName="title" placeholder="Scheme Title">
         </div>
         <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Category</label>
-          <input type="text" class="fog-input" formControlName="category" placeholder="e.g. Welfare, Agriculture">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Category</label>
+          <input type="text" class="fog-input" formControlName="category" placeholder="e.g. Financial Inclusion, Housing, Welfare">
         </div>
         <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Department</label>
-          <input type="text" class="fog-input" formControlName="department" placeholder="e.g. Ministry of Agriculture">
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Ministry / Department</label>
+          <input type="text" class="fog-input" formControlName="department" placeholder="e.g. Ministry of Finance">
         </div>
         <div>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500;">Status</label>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Status</label>
           <select class="fog-input" formControlName="status">
             <option value="Active">Active</option>
             <option value="Closed">Closed</option>
@@ -40,40 +42,75 @@
         </div>
       </div>
 
-      <button type="submit" class="btn-success" [disabled]="isLoading || schemeForm.invalid" style="width: max-content;">
+      <div>
+        <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Scheme Description</label>
+        <textarea class="fog-input" formControlName="description" rows="3" placeholder="Provide a detailed description of the scheme..."></textarea>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Eligibility Criteria</label>
+          <textarea class="fog-input" formControlName="eligibility_criteria" rows="2" placeholder="e.g. Resident of India, Age 18-65 years..."></textarea>
+        </div>
+        <div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 600; color: var(--color-text-muted);">Key Benefits</label>
+          <textarea class="fog-input" formControlName="benefits" rows="2" placeholder="e.g. Financial subsidy, insurance coverage..."></textarea>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-success" [disabled]="isLoading || schemeForm.invalid" style="width: max-content; margin-top: 8px;">
         <span *ngIf="!isLoading">{{ isEditing ? 'Update Scheme' : 'Save Scheme' }} <i class="material-icons">save</i></span>
         <span *ngIf="isLoading">Saving... ⏳</span>
       </button>
     </form>
   </div>
 
+  <!-- Grid of Scheme Cards -->
   <div class="grid-cards">
-    <div *ngIf="schemes.length === 0" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 40px;">
-      No schemes found. Create one to get started!
+    <div *ngIf="schemes.length === 0" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px;" class="glass-container">
+      <i class="material-icons" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 12px;">inbox</i>
+      <div style="font-size: 1.2rem; font-weight: 600;">No schemes found.</div>
     </div>
 
-    <div *ngFor="let scheme of schemes" class="glass-container" style="display: flex; flex-direction: column;">
+    <div *ngFor="let scheme of schemes" class="glass-container hover-scale" style="display: flex; flex-direction: column; border-top: 4px solid var(--color-green);">
       
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-        <div style="background: rgba(0,0,255,0.1); padding: 12px; border-radius: 12px;">
-          <i class="material-icons" style="font-size: 2rem; color: var(--color-blue);">account_balance_wallet</i>
+        <div style="background: var(--color-green-light); padding: 12px; border-radius: 12px;">
+          <i class="material-icons" style="font-size: 2rem; color: var(--color-green);">volunteer_activism</i>
         </div>
-        <span [ngStyle]="{'background': scheme.status === 'Active' ? 'rgba(19,136,8,0.2)' : 'rgba(0,0,0,0.1)', 'color': scheme.status === 'Active' ? 'var(--color-green)' : 'var(--color-text)'}" style="padding: 6px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 500;">
+        <span [ngStyle]="{'background': scheme.status === 'Active' ? 'var(--color-green-light)' : 'rgba(0,0,0,0.1)', 'color': scheme.status === 'Active' ? 'var(--color-green)' : 'var(--color-text)'}" style="padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 700;">
           {{ scheme.status || 'Active' }}
         </span>
       </div>
       
-      <h3 style="margin: 0 0 12px 0; font-size: 1.3rem;">{{ scheme.title }}</h3>
+      <h3 style="margin: 0 0 12px 0; font-size: 1.3rem; color: var(--color-blue);">{{ scheme.title }}</h3>
       
-      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 24px;">
-        <span *ngIf="scheme.category" style="background: var(--glass-bg); padding: 4px 10px; border-radius: 4px; font-size: 0.85rem; color: var(--color-text-muted);">
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+        <span *ngIf="scheme.category" style="background: var(--color-saffron-light); color: var(--color-saffron); padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
           {{ scheme.category }}
         </span>
+        <span *ngIf="scheme.department" style="background: rgba(0,0,128,0.08); color: var(--color-blue); padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+          {{ scheme.department }}
+        </span>
+      </div>
+
+      <p style="color: var(--color-text-muted); font-size: 0.95rem; line-height: 1.5; margin-bottom: 16px;">
+        {{ scheme.description || 'No description provided.' }}
+      </p>
+
+      <div *ngIf="scheme.eligibility_criteria" style="margin-bottom: 12px; padding: 10px 14px; background: rgba(255,255,255,0.4); border-radius: 8px; font-size: 0.9rem;">
+        <strong style="color: var(--color-saffron); display: block; margin-bottom: 2px;">Eligibility:</strong>
+        <span style="color: var(--color-text);">{{ scheme.eligibility_criteria }}</span>
+      </div>
+
+      <div *ngIf="scheme.benefits" style="margin-bottom: 20px; padding: 10px 14px; background: var(--color-green-light); border-radius: 8px; font-size: 0.9rem;">
+        <strong style="color: var(--color-green); display: block; margin-bottom: 2px;">Benefits:</strong>
+        <span style="color: var(--color-text);">{{ scheme.benefits }}</span>
       </div>
       
-      <div style="margin-top: auto; display: flex; justify-content: space-between; border-top: 1px solid var(--glass-border); padding-top: 16px;">
-        <button class="btn-primary" style="flex: 1; margin-right: 8px;" (click)="editScheme(scheme)">Edit</button>
-        <button class="btn-primary" style="background: rgba(255,0,0,0.1); color: red; border: 1px solid rgba(255,0,0,0.2);" (click)="deleteScheme(scheme.id)">Delete</button>
+      <div style="margin-top: auto; display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 16px;">
+        <button class="btn-primary" style="flex: 1; padding: 8px 16px; font-size: 0.95rem;" (click)="editScheme(scheme)">Edit</button>
+        <button class="btn-primary" style="background: rgba(255,0,0,0.15); color: #d9534f; border: 1px solid rgba(255,0,0,0.2); padding: 8px 16px; font-size: 0.95rem;" (click)="deleteScheme(scheme.id)">Delete</button>
       </div>
 
     </div>

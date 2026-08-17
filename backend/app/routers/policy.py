@@ -78,7 +78,6 @@ def get_pending_policies(
 @router.get("/published", response_model=list[PolicyResponse])
 def get_published_policies(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
 ):
     return get_published_policies_service(db)
 

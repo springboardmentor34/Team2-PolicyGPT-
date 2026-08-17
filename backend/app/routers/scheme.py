@@ -12,7 +12,7 @@ from app.services.scheme_service import (
 )
 
 router = APIRouter(
-    prefix="/schemes",
+    prefix="",
     tags=["Schemes"]
 )
 

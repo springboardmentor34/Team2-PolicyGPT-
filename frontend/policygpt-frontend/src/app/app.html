@@ -2,40 +2,43 @@
 
   <!-- Sidebar -->
   <aside class="sidebar" *ngIf="!isLandingPage">
-    <div class="logo-container" style="margin-bottom: 32px;">
+    <div class="logo-container" style="margin-bottom: 28px;">
       <span style="font-size: 2rem;">☸️</span> <!-- Ashoka Chakra / Wheel Emoji -->
       <span style="font-size: 1.8rem; color: var(--color-blue); font-weight: 700;">PolicyGPT</span>
     </div>
 
-    <nav style="display: flex; flex-direction: column; gap: 8px;">
-      <a *ngIf="currentUser" routerLink="/policies" routerLinkActive="active-link" class="nav-link">
-        <i class="material-icons" style="color: var(--color-blue);">policy</i>
-        <span>Policies</span>
+    <nav style="display: flex; flex-direction: column; gap: 6px;">
+      <a routerLink="/dashboard" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-saffron);">dashboard</i>
+        <span>Dashboard</span>
       </a>
 
-      <!-- Administrator Only: Approval Center Link -->
-      <a *ngIf="currentUser?.role?.toUpperCase() === 'ADMINISTRATOR'" routerLink="/approval"
-        routerLinkActive="active-link" class="nav-link">
-        <i class="material-icons" style="color: var(--color-saffron);">gavel</i>
-        <span>Approval Center</span>
+      <a routerLink="/policies" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-blue);">search</i>
+        <span>Policy Search</span>
       </a>
 
-      <a *ngIf="currentUser" routerLink="/schemes" routerLinkActive="active-link" class="nav-link">
-        <i class="material-icons" style="color: var(--color-green);">account_balance</i>
+      <a routerLink="/schemes" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-green);">card_giftcard</i>
         <span>Schemes</span>
       </a>
 
-      <a *ngIf="currentUser" routerLink="/notifications" routerLinkActive="active-link" class="nav-link">
+      <a routerLink="/eligibility" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-green);">fact_check</i>
+        <span>Eligibility Checker</span>
+      </a>
+
+      <a routerLink="/compare" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-blue);">compare_arrows</i>
+        <span>Compare</span>
+      </a>
+
+      <a routerLink="/notifications" routerLinkActive="active-link" class="nav-link">
         <i class="material-icons" style="color: var(--color-saffron);">notifications</i>
         <span>Notifications</span>
       </a>
 
-      <a *ngIf="currentUser" routerLink="/feedback" routerLinkActive="active-link" class="nav-link">
-        <i class="material-icons" style="color: var(--color-blue);">feedback</i>
-        <span>Feedback</span>
-      </a>
-
-      <a *ngIf="currentUser" routerLink="/reports" routerLinkActive="active-link" class="nav-link">
+      <a routerLink="/reports" routerLinkActive="active-link" class="nav-link">
         <i class="material-icons" style="color: var(--color-green);">bar_chart</i>
         <span>Reports</span>
       </a>
@@ -54,8 +57,8 @@
       </a>
 
       <a *ngIf="currentUser" (click)="logout()" style="cursor: pointer;" class="nav-link">
-        <i class="material-icons" style="color: red;">exit_to_app</i>
-        <span style="color: red; font-weight: 500;">Logout</span>
+        <i class="material-icons" style="color: #d9534f;">exit_to_app</i>
+        <span style="color: #d9534f; font-weight: 600;">Logout</span>
       </a>
     </div>
   </aside>
@@ -107,7 +110,7 @@
     </header>
 
     <!-- Dynamic Router Outlet Area -->
-    <div style="padding: 40px;">
+    <div style="padding: 36px;">
       <router-outlet></router-outlet>
     </div>
 

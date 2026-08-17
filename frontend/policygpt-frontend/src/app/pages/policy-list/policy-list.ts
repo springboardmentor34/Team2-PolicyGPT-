@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { PolicyService, Policy } from '../../services/policy.service';
 import { AuthService, AuthUser } from '../../services/auth.service';
 
 @Component({
   selector: 'app-policy-list',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, FormsModule],
   templateUrl: './policy-list.html',
   styleUrl: './policy-list.css'
 })
@@ -19,6 +19,24 @@ export class PolicyList implements OnInit {
   currentEditingId: number | null = null;
   isLoading = false;
   currentUser: AuthUser | null = null;
+
+  // Search and Filter state
+  searchQuery: string = '';
+  selectedCategory: string = 'ALL';
+
+  get filteredPolicies(): Policy[] {
+    return this.policies.filter(p => {
+      const q = this.searchQuery.toLowerCase().trim();
+      const matchesSearch = !q || 
+        p.title.toLowerCase().includes(q) || 
+        (p.description && p.description.toLowerCase().includes(q)) || 
+        (p.category && p.category.toLowerCase().includes(q)) || 
+        (p.department && p.department.toLowerCase().includes(q));
+        
+      const matchesCategory = this.selectedCategory === 'ALL' || p.category === this.selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }
 
   states = [
     'Andhra Pradesh', 'Arunachal Pradesh', 'Assam', 'Bihar', 'Chhattisgarh',

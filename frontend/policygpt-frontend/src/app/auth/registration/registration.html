@@ -89,9 +89,11 @@
           style="cursor: pointer;"
         >
           <option value="" disabled>Select your role...</option>
-          <option value="citizen">👤 Citizen</option>
-          <option value="researcher">🔬 Researcher</option>
-          <option value="organization">🏢 Organization / NGO</option>
+          <option value="citizen">👤 Citizen (Search policies, check eligibility, view schemes)</option>
+          <option value="government_official">🏛️ Government Official (Upload policies, schemes, updates)</option>
+          <option value="administrator">🛡️ Administrator (Manage system, users, policies)</option>
+          <option value="researcher">🔬 Researcher (Analyze policies, generate reports)</option>
+          <option value="organization">🏢 Organization / NGO (Access policies, schemes & reports)</option>
         </select>
         <div *ngIf="role?.invalid && role?.touched"
              style="color: #ff6666; font-size: 0.88rem; margin-top: 4px;">

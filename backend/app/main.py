@@ -30,26 +30,33 @@ Base.metadata.create_all(bind=engine)
 # Dynamically apply table schema modifications if table already exists (for PostgreSQL compatibility)
 def run_migrations():
     from sqlalchemy import text
+    statements = [
+        "ALTER TABLE policies ADD COLUMN created_by INTEGER REFERENCES users(id);",
+        "ALTER TABLE policies ADD COLUMN reviewed_by INTEGER REFERENCES users(id);",
+        "ALTER TABLE policies ADD COLUMN review_comment TEXT;",
+        "ALTER TABLE policies ADD COLUMN updated_at TIMESTAMP;",
+        "ALTER TABLE policies ADD COLUMN reviewed_at TIMESTAMP;",
+        "ALTER TABLE policies ADD COLUMN published_at TIMESTAMP;",
+        "ALTER TABLE audit_logs ADD COLUMN old_status VARCHAR;",
+        "ALTER TABLE audit_logs ADD COLUMN new_status VARCHAR;",
+        "ALTER TABLE audit_logs ADD COLUMN comment TEXT;",
+        "ALTER TABLE audit_logs ADD COLUMN policy_id INTEGER REFERENCES policies(id);"
+    ]
     try:
         with engine.connect() as conn:
-            # policies table adjustments
-            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES users(id);"))
-            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_by INTEGER REFERENCES users(id);"))
-            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS review_comment TEXT;"))
-            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITHOUT TIME ZONE;"))
-            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP WITHOUT TIME ZONE;"))
-            conn.execute(text("ALTER TABLE policies ADD COLUMN IF NOT EXISTS published_at TIMESTAMP WITHOUT TIME ZONE;"))
-            
-            # audit_logs table adjustments
-            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS old_status VARCHAR;"))
-            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS new_status VARCHAR;"))
-            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS comment TEXT;"))
-            conn.execute(text("ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS policy_id INTEGER REFERENCES policies(id);"))
-            conn.commit()
+            for stmt in statements:
+                try:
+                    conn.execute(text(stmt))
+                    conn.commit()
+                except Exception:
+                    pass
 
             # Seed developer test users if they don't exist
             from app.database.database import SessionLocal
             from app.models.user import User
+            from app.models.policy import Policy
+            from app.models.scheme import Scheme
+            from app.models.notification import Notification
             from app.auth.security import hash_password
             
             db = SessionLocal()
@@ -71,6 +78,111 @@ def run_migrations():
                         db.add(user)
                         db.commit()
                         print(f"Seeded user: {su['email']}")
+
+                admin_user = db.query(User).filter(User.role == "administrator").first()
+                official_user = db.query(User).filter(User.role == "government_official").first()
+                admin_id = admin_user.id if admin_user else 1
+                official_id = official_user.id if official_user else 1
+
+                # Seed sample Policies if empty
+                if db.query(Policy).count() == 0:
+                    sample_policies = [
+                        Policy(
+                            title="PM Ayushman Bharat Digital Health Mission",
+                            description="National digital health ecosystem providing universal health identification and health insurance coverage up to Rs 5 Lakh per family.",
+                            category="Healthcare",
+                            department="Ministry of Health and Family Welfare",
+                            state="All India",
+                            status="PUBLISHED",
+                            created_by=official_id,
+                            reviewed_by=admin_id
+                        ),
+                        Policy(
+                            title="National Education Policy (NEP) 2026 Skill Initiative",
+                            description="Comprehensive educational policy reform introducing vocational training, digital literacy, and universal higher education access.",
+                            category="Education",
+                            department="Ministry of Education",
+                            state="All India",
+                            status="PUBLISHED",
+                            created_by=official_id,
+                            reviewed_by=admin_id
+                        ),
+                        Policy(
+                            title="PM Kisan Samman Nidhi Direct Transfer Scheme",
+                            description="Direct income support of Rs 6,000 per year to small and marginal farmer families across the country.",
+                            category="Agriculture",
+                            department="Ministry of Agriculture & Farmers Welfare",
+                            state="All India",
+                            status="PUBLISHED",
+                            created_by=official_id,
+                            reviewed_by=admin_id
+                        ),
+                        Policy(
+                            title="Green Solar Rooftop Subsidy Initiative",
+                            description="Financial assistance and 40% subsidy for residential solar rooftop installations promoting renewable clean energy.",
+                            category="Environment & Energy",
+                            department="Ministry of New and Renewable Energy",
+                            state="All India",
+                            status="PENDING_APPROVAL",
+                            created_by=official_id
+                        ),
+                        Policy(
+                            title="Digital India Startup Empowerment Fund",
+                            description="Grant and seed capital support for technology startups building public good solutions in AI, FinTech, and AgriTech.",
+                            category="IT & Electronics",
+                            department="Ministry of Electronics and Information Technology",
+                            state="All India",
+                            status="DRAFT",
+                            created_by=official_id
+                        )
+                    ]
+                    db.add_all(sample_policies)
+                    db.commit()
+                    print("Seeded initial policies successfully.")
+
+                # Seed sample Schemes if empty
+                if db.query(Scheme).count() == 0:
+                    sample_schemes = [
+                        Scheme(
+                            title="Pradhan Mantri Jan Dhan Yojana (PMJDY)",
+                            description="National Mission for Financial Inclusion ensuring access to financial services like Bank Accounts, Credit, Insurance & Pension.",
+                            category="Financial Inclusion",
+                            eligibility_criteria="Resident of India, Age 18-65 years, Valid Aadhaar Card.",
+                            benefits="Zero balance account, Rs 2 Lakh accidental insurance cover, RuPay Debit Card.",
+                            status="Active"
+                        ),
+                        Scheme(
+                            title="Pradhan Mantri Awas Yojana (PMAY-Urban)",
+                            description="Housing for All initiative providing interest subsidy and financial assistance for pucca house construction.",
+                            category="Housing",
+                            eligibility_criteria="Economically Weaker Section (EWS) / LIG families with annual income under Rs 6 Lakh.",
+                            benefits="Interest subsidy up to 6.5% on home loans up to Rs 6 Lakh for 20 years.",
+                            status="Active"
+                        ),
+                        Scheme(
+                            title="PM Employment Generation Programme (PMEGP)",
+                            description="Credit-linked subsidy programme to generate self-employment opportunities through micro-enterprise establishment.",
+                            category="Employment & Entrepreneurship",
+                            eligibility_criteria="Any individual above 18 years of age, minimum VIII standard pass for projects above Rs 10 Lakh.",
+                            benefits="Subsidy up to 35% of project cost for rural micro-enterprises.",
+                            status="Active"
+                        )
+                    ]
+                    db.add_all(sample_schemes)
+                    db.commit()
+                    print("Seeded initial schemes successfully.")
+
+                # Seed sample Notifications if empty
+                if db.query(Notification).count() == 0:
+                    sample_notifs = [
+                        Notification(user_id=official_id, message="Policy 'PM Ayushman Bharat Digital Health Mission' has been APPROVED and PUBLISHED.", type="POLICY_PUBLISHED"),
+                        Notification(user_id=official_id, message="Policy 'Green Solar Rooftop Subsidy Initiative' submitted for PENDING_APPROVAL review.", type="POLICY_SUBMITTED"),
+                        Notification(user_id=admin_id, message="Welcome to PolicyGPT. You have 1 pending policy requiring approval review.", type="SYSTEM")
+                    ]
+                    db.add_all(sample_notifs)
+                    db.commit()
+                    print("Seeded initial notifications successfully.")
+
             except Exception as se:
                 print(f"Seeding error: {se}")
             finally:

@@ -1,64 +1,86 @@
 <div style="max-width: 1400px; margin: 0 auto;">
   
   <!-- Welcome Banner -->
-  <div class="glass-container" style="margin-bottom: 40px; text-align: center; position: relative; overflow: hidden; min-height: 250px; display: flex; flex-direction: column; justify-content: center;">
+  <div class="glass-container" style="margin-bottom: 32px; text-align: center; position: relative; overflow: hidden; min-height: 200px; display: flex; flex-direction: column; justify-content: center; border-top: 4px solid var(--color-saffron);">
     <div style="position: relative; z-index: 1;">
-      <h1 style="color: var(--color-blue); font-size: 2.5rem; margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 12px;">
-        <i class="material-icons" style="font-size: 3rem;">waving_hand</i>
+      <h1 style="color: var(--color-blue); font-size: 2.3rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 12px;">
+        <i class="material-icons" style="font-size: 2.8rem; color: var(--color-saffron);">account_balance</i>
         Welcome back, {{ currentUser?.full_name || 'Citizen' }}!
       </h1>
-      <p style="color: var(--color-text-muted); font-size: 1.2rem; font-weight: 500;">
-        Role: <strong style="color: var(--color-saffron);">{{ currentUser?.role | uppercase }}</strong> 🇮🇳
+      <p style="color: var(--color-text-muted); font-size: 1.15rem; font-weight: 500; margin: 0;">
+        Role Access Level: <strong style="color: var(--color-saffron); text-transform: uppercase;">{{ currentUser?.role || 'CITIZEN' }}</strong> 🇮🇳
       </p>
     </div>
   </div>
 
-  <!-- Stats Grid -->
-  <div class="grid-cards" style="margin-bottom: 40px;">
+  <!-- Quick Action Navigation Toolbar -->
+  <div class="glass-container" style="margin-bottom: 32px; padding: 20px; display: flex; align-items: center; justify-content: space-around; flex-wrap: wrap; gap: 16px;">
+    <button class="btn-primary" routerLink="/policies">
+      <i class="material-icons">search</i> Policy Search
+    </button>
+    <button class="btn-success" routerLink="/schemes">
+      <i class="material-icons">card_giftcard</i> Schemes
+    </button>
+    <button class="btn-success" style="background: var(--color-saffron);" routerLink="/eligibility">
+      <i class="material-icons">fact_check</i> Eligibility Checker
+    </button>
+    <button class="btn-primary" style="background: var(--color-blue);" routerLink="/compare">
+      <i class="material-icons">compare_arrows</i> Compare
+    </button>
+    <button class="btn-primary" style="background: var(--color-saffron);" routerLink="/notifications">
+      <i class="material-icons">notifications</i> Notifications
+    </button>
+    <button class="btn-success" style="background: var(--color-green);" routerLink="/reports">
+      <i class="material-icons">bar_chart</i> Reports
+    </button>
+  </div>
+
+  <!-- Stats & Messages Grid -->
+  <div class="grid-cards" style="margin-bottom: 32px;">
     
-    <!-- Total Schemes Card -->
+    <!-- Active Schemes Card -->
     <div class="glass-container" style="text-align: center; border-top: 4px solid var(--color-saffron);">
-      <h3 style="color: var(--color-saffron); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+      <h3 style="color: var(--color-saffron); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
         🎯 Active Schemes
       </h3>
       <div class="stat-value">{{ recentSchemes.length }}</div>
-      <p style="color: var(--color-text-muted); margin-bottom: 24px;">Government Schemes found</p>
+      <p style="color: var(--color-text-muted); margin-bottom: 24px;">Government Schemes Available</p>
       <button class="btn-primary" style="width: 100%;" routerLink="/schemes">
         <i class="material-icons">search</i> View Schemes
       </button>
     </div>
 
-    <!-- Active Notifications -->
+    <!-- Messages & System Notifications Card -->
     <div class="glass-container" style="border-top: 4px solid var(--color-blue);">
-      <h3 style="color: var(--color-blue); font-size: 1.5rem; display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
-        🔔 Recent Notifications
+      <h3 style="color: var(--color-blue); font-size: 1.4rem; display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
+        💬 Dashboard Messages & Alerts
       </h3>
       
-      <div *ngIf="notifications.length === 0" style="text-align: center; color: var(--color-text-muted); margin: 20px 0;">
-        No new notifications.
+      <div *ngIf="notifications.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 20px 0;">
+        No active system messages.
       </div>
 
-      <ul *ngIf="notifications.length > 0" style="list-style: none; padding: 0; margin: 0 0 24px 0; display: flex; flex-direction: column; gap: 12px;">
-        <li *ngFor="let notif of notifications" style="padding: 12px; background: rgba(255,153,51,0.1); border-radius: 8px; display: flex; align-items: flex-start; gap: 12px;">
-          <i class="material-icons" style="color: var(--color-saffron);">info</i>
+      <ul *ngIf="notifications.length > 0" style="list-style: none; padding: 0; margin: 0 0 20px 0; display: flex; flex-direction: column; gap: 10px;">
+        <li *ngFor="let notif of notifications" style="padding: 12px; background: var(--color-saffron-light); border-radius: 10px; display: flex; align-items: flex-start; gap: 10px;">
+          <i class="material-icons" style="color: var(--color-saffron); font-size: 1.3rem; margin-top: 2px;">info</i>
           <div>
-            <strong style="display: block;">Alert</strong>
-            <span style="font-size: 0.95rem; color: var(--color-text-muted);">{{ notif.message }}</span>
+            <strong style="display: block; font-size: 0.9rem; color: var(--color-blue);">System Update</strong>
+            <span style="font-size: 0.95rem; color: var(--color-text);">{{ notif.message }}</span>
           </div>
         </li>
       </ul>
       <button class="btn-primary" style="width: 100%; background: var(--color-blue);" routerLink="/notifications">
-        <i class="material-icons">notifications_active</i> All Notifications
+        <i class="material-icons">notifications_active</i> All Messages
       </button>
     </div>
 
-    <!-- Total Policies -->
+    <!-- Published Policies Card -->
     <div class="glass-container" style="text-align: center; border-top: 4px solid var(--color-green);">
-      <h3 style="color: var(--color-green); font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
-        📜 Recent Policies
+      <h3 style="color: var(--color-green); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
+        📜 Published Policies
       </h3>
       <div class="stat-value" style="color: var(--color-green);">{{ recentPolicies.length }}</div>
-      <p style="color: var(--color-text-muted); margin-bottom: 24px;">Published Government Policies</p>
+      <p style="color: var(--color-text-muted); margin-bottom: 24px;">Approved & Published Policies</p>
       <button class="btn-success" style="width: 100%;" routerLink="/policies">
         <i class="material-icons">policy</i> View Policies
       </button>
@@ -68,7 +90,7 @@
 
   <!-- Recent Activity Section -->
   <div class="glass-container">
-    <h2 style="color: var(--color-blue); display: flex; align-items: center; gap: 12px; margin-bottom: 24px;">
+    <h2 style="color: var(--color-blue); font-size: 1.5rem; display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
       <i class="material-icons">history</i> Recent Platform Additions 🕰️
     </h2>
     
@@ -76,27 +98,30 @@
       <table style="width: 100%; text-align: left; border-collapse: collapse;">
         <thead>
           <tr style="border-bottom: 2px solid var(--glass-border);">
-            <th style="padding: 16px; color: var(--color-text-muted);">Title</th>
-            <th style="padding: 16px; color: var(--color-text-muted);">Type</th>
-            <th style="padding: 16px; color: var(--color-text-muted);">Date Added</th>
+            <th style="padding: 14px; color: var(--color-text-muted);">Title</th>
+            <th style="padding: 14px; color: var(--color-text-muted);">Type</th>
+            <th style="padding: 14px; color: var(--color-text-muted);">Category</th>
+            <th style="padding: 14px; color: var(--color-text-muted);">Date Added</th>
           </tr>
         </thead>
         <tbody>
-          <tr *ngFor="let p of recentPolicies" style="border-bottom: 1px solid var(--glass-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
-            <td style="padding: 16px; display: flex; align-items: center; gap: 12px;">
+          <tr *ngFor="let p of recentPolicies" style="border-bottom: 1px solid var(--glass-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.04)'" onmouseout="this.style.background='transparent'">
+            <td style="padding: 14px; display: flex; align-items: center; gap: 10px; font-weight: 600;">
               <i class="material-icons" style="color: var(--color-green);">policy</i>
               {{ p.title }}
             </td>
-            <td style="padding: 16px;">Policy</td>
-            <td style="padding: 16px;">{{ p.created_at | date:'mediumDate' }}</td>
+            <td style="padding: 14px;">Policy</td>
+            <td style="padding: 14px;"><span style="padding: 4px 10px; background: var(--color-green-light); color: var(--color-green); border-radius: 12px; font-weight: 600; font-size: 0.85rem;">{{ p.category }}</span></td>
+            <td style="padding: 14px;">{{ p.created_at | date:'mediumDate' }}</td>
           </tr>
-          <tr *ngFor="let s of recentSchemes" style="border-bottom: 1px solid var(--glass-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.05)'" onmouseout="this.style.background='transparent'">
-            <td style="padding: 16px; display: flex; align-items: center; gap: 12px;">
+          <tr *ngFor="let s of recentSchemes" style="border-bottom: 1px solid var(--glass-border); transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.04)'" onmouseout="this.style.background='transparent'">
+            <td style="padding: 14px; display: flex; align-items: center; gap: 10px; font-weight: 600;">
               <i class="material-icons" style="color: var(--color-saffron);">volunteer_activism</i>
               {{ s.title }}
             </td>
-            <td style="padding: 16px;">Scheme</td>
-            <td style="padding: 16px;">{{ s.created_at | date:'mediumDate' }}</td>
+            <td style="padding: 14px;">Scheme</td>
+            <td style="padding: 14px;"><span style="padding: 4px 10px; background: var(--color-saffron-light); color: var(--color-saffron); border-radius: 12px; font-weight: 600; font-size: 0.85rem;">{{ s.category }}</span></td>
+            <td style="padding: 14px;">{{ s.created_at | date:'mediumDate' }}</td>
           </tr>
         </tbody>
       </table>

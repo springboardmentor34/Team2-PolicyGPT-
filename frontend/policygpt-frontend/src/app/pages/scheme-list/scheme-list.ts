@@ -21,8 +21,11 @@ export class SchemeList implements OnInit {
   constructor(private fb: FormBuilder, private schemeService: SchemeService) {
     this.schemeForm = this.fb.group({
       title: ['', Validators.required],
+      description: [''],
       category: [''],
       department: [''],
+      eligibility_criteria: [''],
+      benefits: [''],
       status: ['Active']
     });
   }
@@ -53,9 +56,12 @@ export class SchemeList implements OnInit {
     this.currentEditingId = scheme.id;
     this.schemeForm.patchValue({
       title: scheme.title,
+      description: scheme.description,
       category: scheme.category,
       department: scheme.department,
-      status: scheme.status
+      eligibility_criteria: scheme.eligibility_criteria,
+      benefits: scheme.benefits,
+      status: scheme.status || 'Active'
     });
   }
 

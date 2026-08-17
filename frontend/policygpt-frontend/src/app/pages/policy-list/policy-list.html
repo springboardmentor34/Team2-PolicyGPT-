@@ -5,26 +5,31 @@
     <div>
       <h2
         style="color: var(--color-blue); margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; font-weight: 700;">
-        <i class="material-icons">policy</i> Government Policies
+        <i class="material-icons">search</i> Policy Search
       </h2>
-      <p *ngIf="currentUser?.role?.toUpperCase() === 'CITIZEN'"
-        style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
-        Browse and search official published government policies.
-      </p>
-      <p *ngIf="currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL'"
-        style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
-        Create, edit, and transition your draft policies through the approval workflow stages.
-      </p>
-      <p *ngIf="currentUser?.role?.toUpperCase() === 'ADMINISTRATOR'"
-        style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
-        Browse and manage policies in all states of the approval lifecycle.
+      <p style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
+        Search and filter official government policies, schemes, and guidelines across departments.
       </p>
     </div>
-    <button *ngIf="currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL'" class="btn-primary"
-      (click)="toggleForm()" style="padding: 10px 20px; font-size: 1rem; border-radius: 8px;">
-      <i class="material-icons">{{ showForm ? 'close' : 'add' }}</i>
-      {{ showForm ? 'Cancel' : 'Create Policy' }}
-    </button>
+  </div>
+
+  <!-- Search Bar and Category Filter Toolbar -->
+  <div class="glass-container" style="margin-bottom: 28px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+    <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px;">
+      <i class="material-icons" style="color: var(--color-saffron); font-size: 1.8rem;">search</i>
+      <input type="text" class="fog-input" [(ngModel)]="searchQuery" placeholder="Search policies by keyword, department, category, or title..." style="padding: 12px 16px;">
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <i class="material-icons" style="color: var(--color-blue);">filter_list</i>
+      <select class="fog-input" [(ngModel)]="selectedCategory" style="padding: 12px; width: auto;">
+        <option value="ALL">All Categories</option>
+        <option value="Healthcare">Healthcare</option>
+        <option value="Education">Education</option>
+        <option value="Agriculture">Agriculture</option>
+        <option value="Environment & Energy">Environment & Energy</option>
+        <option value="IT & Electronics">IT & Electronics</option>
+      </select>
+    </div>
   </div>
 
   <!-- Multi-Section Policy Form -->
@@ -438,14 +443,14 @@
 
   <!-- Policies List -->
   <div style="display: flex; flex-direction: column; gap: 20px;">
-    <div *ngIf="policies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 60px;"
+    <div *ngIf="filteredPolicies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 60px;"
       class="glass-container">
       <i class="material-icons" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 12px;">inbox</i>
-      <div style="font-size: 1.2rem; font-weight: 600;">No policies found.</div>
-      <p style="margin: 8px 0 0 0;">Create a new policy using the "Create Policy" button above to get started.</p>
+      <div style="font-size: 1.2rem; font-weight: 600;">No matching policies found.</div>
+      <p style="margin: 8px 0 0 0;">Try adjusting your search query or category filters above.</p>
     </div>
 
-    <div *ngFor="let policy of policies" class="glass-container slide-up"
+    <div *ngFor="let policy of filteredPolicies" class="glass-container slide-up"
       [ngStyle]="{'border-left': '6px solid ' + (policy.status === 'PUBLISHED' ? 'var(--color-green)' : policy.status === 'APPROVED' ? '#2196f3' : policy.status === 'REJECTED' ? 'red' : policy.status === 'PENDING_APPROVAL' ? '#ff9800' : 'var(--color-saffron)')}"
       style="padding: 24px; display: flex; flex-direction: column; gap: 16px; border-radius: 16px;">
 

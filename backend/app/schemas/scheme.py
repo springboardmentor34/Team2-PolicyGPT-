@@ -9,6 +9,8 @@ class SchemeCreate(BaseModel):
     department: str | None = None
     state: str | None = None
     status: str | None = None
+    eligibility_criteria: str | None = None
+    benefits: str | None = None
 
 
 class SchemeUpdate(BaseModel):
@@ -18,6 +20,8 @@ class SchemeUpdate(BaseModel):
     department: str | None = None
     state: str | None = None
     status: str | None = None
+    eligibility_criteria: str | None = None
+    benefits: str | None = None
 
 
 class SchemeResponse(BaseModel):
@@ -28,6 +32,8 @@ class SchemeResponse(BaseModel):
     department: str | None = None
     state: str | None = None
     status: str | None = None
+    eligibility_criteria: str | None = None
+    benefits: str | None = None
     created_at: datetime
 
     class Config:

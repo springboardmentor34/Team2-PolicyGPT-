@@ -9,6 +9,8 @@ import { Feedback } from './pages/feedback/feedback';
 import { Reports } from './pages/reports/reports';
 import { LandingPage } from './pages/landing-page/landing-page';
 import { PolicyApproval } from './pages/policy-approval/policy-approval';
+import { ComparePolicies } from './pages/compare-policies/compare-policies';
+import { EligibilityChecker } from './pages/eligibility-checker/eligibility-checker';
 
 export const routes: Routes = [
   { path: 'landing', component: LandingPage },
@@ -19,9 +21,10 @@ export const routes: Routes = [
   { path: 'approval', component: PolicyApproval },
   { path: 'policy-approval', component: PolicyApproval },
   { path: 'schemes', component: SchemeList },
+  { path: 'compare', component: ComparePolicies },
+  { path: 'eligibility', component: EligibilityChecker },
   { path: 'notifications', component: Notifications },
   { path: 'feedback', component: Feedback },
   { path: 'reports', component: Reports },
   { path: '', redirectTo: '/landing', pathMatch: 'full' }
 ];
-

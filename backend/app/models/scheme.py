@@ -14,6 +14,8 @@ class Scheme(Base):
     department = Column(String, nullable=True)
     state = Column(String, nullable=True)
     status = Column(String, nullable=True)
+    eligibility_criteria = Column(Text, nullable=True)
+    benefits = Column(Text, nullable=True)
     created_at = Column(DateTime, default=lambda: datetime.now(UTC))
 
     eligibility_rules = relationship("EligibilityRule", back_populates="scheme")
