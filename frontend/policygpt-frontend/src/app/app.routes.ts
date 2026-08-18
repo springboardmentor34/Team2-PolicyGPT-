@@ -11,20 +11,23 @@ import { LandingPage } from './pages/landing-page/landing-page';
 import { PolicyApproval } from './pages/policy-approval/policy-approval';
 import { ComparePolicies } from './pages/compare-policies/compare-policies';
 import { EligibilityChecker } from './pages/eligibility-checker/eligibility-checker';
+import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
   { path: 'landing', component: LandingPage },
   { path: 'login', component: Login },
   { path: 'register', component: Registration },
-  { path: 'dashboard', component: CitizenDashboard },
-  { path: 'policies', component: PolicyList },
-  { path: 'approval', component: PolicyApproval },
-  { path: 'policy-approval', component: PolicyApproval },
-  { path: 'schemes', component: SchemeList },
-  { path: 'compare', component: ComparePolicies },
-  { path: 'eligibility', component: EligibilityChecker },
-  { path: 'notifications', component: Notifications },
-  { path: 'feedback', component: Feedback },
-  { path: 'reports', component: Reports },
-  { path: '', redirectTo: '/landing', pathMatch: 'full' }
+  { path: 'dashboard', component: CitizenDashboard, canActivate: [authGuard] },
+  { path: 'policies', component: PolicyList, canActivate: [authGuard] },
+  { path: 'approval', component: PolicyApproval, canActivate: [authGuard] },
+  { path: 'policy-approval', component: PolicyApproval, canActivate: [authGuard] },
+  { path: 'schemes', component: SchemeList, canActivate: [authGuard] },
+  { path: 'compare', component: ComparePolicies, canActivate: [authGuard] },
+  { path: 'eligibility', component: EligibilityChecker, canActivate: [authGuard] },
+  { path: 'notifications', component: Notifications, canActivate: [authGuard] },
+  { path: 'feedback', component: Feedback, canActivate: [authGuard] },
+  { path: 'reports', component: Reports, canActivate: [authGuard] },
+  { path: '', redirectTo: '/landing', pathMatch: 'full' },
+  { path: '**', redirectTo: '/landing' }
 ];
+

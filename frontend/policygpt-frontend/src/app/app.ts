@@ -34,8 +34,15 @@ export class App implements OnInit {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      this.isLandingPage = event.urlAfterRedirects === '/' || event.urlAfterRedirects === '/landing';
+      const url = event.urlAfterRedirects || '';
+      const path = url.split('?')[0];
+      this.isLandingPage = path === '/landing' || path === '/login' || path === '/register';
       this.syncUser();
+
+      // If user is already logged in and tries to access /login, redirect to /dashboard
+      if (this.authService.isLoggedIn() && (path === '/login' || path === '/register')) {
+        this.router.navigate(['/dashboard']);
+      }
     });
   }
 

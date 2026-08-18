@@ -24,12 +24,15 @@
       PolicyGPT is an AI-powered platform that helps citizens discover government schemes, understand public policies, verify eligibility, and access government services through a modern digital interface.
     </p>
     
-    <div class="slide-up" style="display: flex; gap: 24px; justify-content: center; animation-delay: 0.3s;">
-      <a routerLink="/register" class="btn-primary ripple" style="font-size: 1.2rem; padding: 16px 32px;">
+    <div class="slide-up" style="display: flex; gap: 24px; justify-content: center; animation-delay: 0.3s; flex-wrap: wrap;">
+      <a *ngIf="!authService.isLoggedIn()" routerLink="/register" class="btn-primary ripple" style="font-size: 1.2rem; padding: 16px 32px;">
         Get Started <i class="material-icons">arrow_forward</i>
       </a>
-      <a routerLink="/login" class="btn-primary ripple" style="background: transparent; border: 2px solid white; font-size: 1.2rem; padding: 16px 32px;">
+      <a *ngIf="!authService.isLoggedIn()" routerLink="/login" class="btn-primary ripple" style="background: transparent; border: 2px solid white; font-size: 1.2rem; padding: 16px 32px;">
         Login
+      </a>
+      <a *ngIf="authService.isLoggedIn()" routerLink="/dashboard" class="btn-primary ripple" style="font-size: 1.2rem; padding: 16px 32px; background: var(--color-green);">
+        Go to Dashboard <i class="material-icons">dashboard</i>
       </a>
     </div>
 

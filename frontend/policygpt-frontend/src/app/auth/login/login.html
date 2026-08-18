@@ -79,6 +79,24 @@
         <span *ngIf="isLoading">Signing in... ⏳</span>
       </button>
 
+      <!-- Quick Demo Login Accounts -->
+      <div style="background: var(--color-saffron-light); padding: 12px; border-radius: 8px; border: 1px dashed var(--color-saffron); text-align: center;">
+        <span style="font-size: 0.85rem; font-weight: 600; color: var(--color-saffron-dark); display: block; margin-bottom: 8px;">
+          ⚡ Quick Demo Login (One-click fill):
+        </span>
+        <div style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;">
+          <button type="button" (click)="fillDemoAccount('citizen@policygpt.gov.in', 'citizen')" class="fog-input" style="padding: 4px 10px; font-size: 0.8rem; width: auto; cursor: pointer; background: #fff; font-weight: 600;">
+            👤 Citizen
+          </button>
+          <button type="button" (click)="fillDemoAccount('official@policygpt.gov.in', 'official')" class="fog-input" style="padding: 4px 10px; font-size: 0.8rem; width: auto; cursor: pointer; background: #fff; font-weight: 600;">
+            🏛️ Official
+          </button>
+          <button type="button" (click)="fillDemoAccount('admin@policygpt.gov.in', 'admin')" class="fog-input" style="padding: 4px 10px; font-size: 0.8rem; width: auto; cursor: pointer; background: #fff; font-weight: 600;">
+            👑 Admin
+          </button>
+        </div>
+      </div>
+
       <div style="text-align: center; margin-top: 16px; font-size: 1.1rem;">
         Don't have an account?
         <a routerLink="/register" style="color: var(--color-green); text-decoration: none; font-weight: 500;">
