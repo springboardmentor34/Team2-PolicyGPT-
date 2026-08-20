@@ -31,16 +31,21 @@ Base.metadata.create_all(bind=engine)
 def run_migrations():
     from sqlalchemy import text
     statements = [
-        "ALTER TABLE policies ADD COLUMN created_by INTEGER REFERENCES users(id);",
-        "ALTER TABLE policies ADD COLUMN reviewed_by INTEGER REFERENCES users(id);",
-        "ALTER TABLE policies ADD COLUMN review_comment TEXT;",
-        "ALTER TABLE policies ADD COLUMN updated_at TIMESTAMP;",
-        "ALTER TABLE policies ADD COLUMN reviewed_at TIMESTAMP;",
-        "ALTER TABLE policies ADD COLUMN published_at TIMESTAMP;",
-        "ALTER TABLE audit_logs ADD COLUMN old_status VARCHAR;",
-        "ALTER TABLE audit_logs ADD COLUMN new_status VARCHAR;",
-        "ALTER TABLE audit_logs ADD COLUMN comment TEXT;",
-        "ALTER TABLE audit_logs ADD COLUMN policy_id INTEGER REFERENCES policies(id);"
+        # policies table — Milestone 2 workflow columns
+        "ALTER TABLE policies ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES users(id);",
+        "ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_by INTEGER REFERENCES users(id);",
+        "ALTER TABLE policies ADD COLUMN IF NOT EXISTS review_comment TEXT;",
+        "ALTER TABLE policies ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP;",
+        "ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP;",
+        "ALTER TABLE policies ADD COLUMN IF NOT EXISTS published_at TIMESTAMP;",
+        # audit_logs table — Milestone 2 workflow tracking columns
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS old_status VARCHAR;",
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS new_status VARCHAR;",
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS comment TEXT;",
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS policy_id INTEGER REFERENCES policies(id);",
+        # schemes table — Manaswini's Milestone 2 additions
+        "ALTER TABLE schemes ADD COLUMN IF NOT EXISTS eligibility_criteria TEXT;",
+        "ALTER TABLE schemes ADD COLUMN IF NOT EXISTS benefits TEXT;",
     ]
     try:
         with engine.connect() as conn:
