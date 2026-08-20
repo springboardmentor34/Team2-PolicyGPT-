@@ -5,19 +5,30 @@
     <div>
       <h2
         style="color: var(--color-blue); margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px; font-weight: 700;">
-        <i class="material-icons">search</i> Policy Search
+        <i class="material-icons">search</i> Policy Registry
       </h2>
       <p style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
-        Search and filter official government policies, schemes, and guidelines across departments.
+        Search, filter, or draft official government policies and guidelines.
       </p>
+    </div>
+    <div>
+      <button
+        *ngIf="currentUser?.role?.toUpperCase() === 'GOVERNMENT_OFFICIAL' || currentUser?.role?.toUpperCase() === 'ADMINISTRATOR'"
+        class="btn-success" (click)="toggleForm()"
+        style="padding: 12px 24px; font-size: 1.1rem; display: flex; align-items: center; gap: 8px; border-radius: 8px; font-weight: 600;">
+        <i class="material-icons">{{ showForm ? 'close' : 'add_circle' }}</i>
+        {{ showForm ? 'Cancel Policy Entry' : 'Draft New Policy' }}
+      </button>
     </div>
   </div>
 
   <!-- Search Bar and Category Filter Toolbar -->
-  <div class="glass-container" style="margin-bottom: 28px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+  <div class="glass-container"
+    style="margin-bottom: 28px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
     <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px;">
       <i class="material-icons" style="color: var(--color-saffron); font-size: 1.8rem;">search</i>
-      <input type="text" class="fog-input" [(ngModel)]="searchQuery" placeholder="Search policies by keyword, department, category, or title..." style="padding: 12px 16px;">
+      <input type="text" class="fog-input" [(ngModel)]="searchQuery"
+        placeholder="Search policies by keyword, department, category, or title..." style="padding: 12px 16px;">
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
       <i class="material-icons" style="color: var(--color-blue);">filter_list</i>
@@ -443,8 +454,8 @@
 
   <!-- Policies List -->
   <div style="display: flex; flex-direction: column; gap: 20px;">
-    <div *ngIf="filteredPolicies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 60px;"
-      class="glass-container">
+    <div *ngIf="filteredPolicies.length === 0"
+      style="text-align: center; color: var(--color-text-muted); padding: 60px;" class="glass-container">
       <i class="material-icons" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 12px;">inbox</i>
       <div style="font-size: 1.2rem; font-weight: 600;">No matching policies found.</div>
       <p style="margin: 8px 0 0 0;">Try adjusting your search query or category filters above.</p>
