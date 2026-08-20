@@ -27,7 +27,7 @@ export const routes: Routes = [
   { path: 'notifications', component: Notifications, canActivate: [authGuard] },
   { path: 'feedback', component: Feedback, canActivate: [authGuard] },
   { path: 'reports', component: Reports, canActivate: [authGuard] },
-  { path: '', redirectTo: '/landing', pathMatch: 'full' },
-  { path: '**', redirectTo: '/landing' }
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: '**', redirectTo: '/login' }
 ];
 
