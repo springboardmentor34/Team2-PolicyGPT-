@@ -59,6 +59,18 @@ export class App implements OnInit {
     this.currentUser = this.authService.getUser();
   }
 
+  get isGovernmentOfficial(): boolean {
+    return this.currentUser?.role === 'government_official';
+  }
+
+  get isAdministrator(): boolean {
+    return this.currentUser?.role === 'administrator';
+  }
+
+  get canApprovePolicies(): boolean {
+    return this.isGovernmentOfficial || this.isAdministrator;
+  }
+
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     this.applyTheme();

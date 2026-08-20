@@ -18,6 +18,11 @@
         <span>Policy Search</span>
       </a>
 
+      <a *ngIf="canApprovePolicies" routerLink="/approval" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-saffron);">gavel</i>
+        <span>Policy Approval</span>
+      </a>
+
       <a routerLink="/schemes" routerLinkActive="active-link" class="nav-link">
         <i class="material-icons" style="color: var(--color-green);">card_giftcard</i>
         <span>Schemes</span>

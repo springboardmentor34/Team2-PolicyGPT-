@@ -47,4 +47,16 @@ export class CitizenDashboard implements OnInit {
       error: (err) => console.error(err)
     });
   }
+
+  get isGovernmentOfficial(): boolean {
+    return this.currentUser?.role === 'government_official';
+  }
+
+  get isAdministrator(): boolean {
+    return this.currentUser?.role === 'administrator';
+  }
+
+  get canApprovePolicies(): boolean {
+    return this.isGovernmentOfficial || this.isAdministrator;
+  }
 }
