@@ -11,6 +11,7 @@ import { LandingPage } from './pages/landing-page/landing-page';
 import { PolicyApproval } from './pages/policy-approval/policy-approval';
 import { ComparePolicies } from './pages/compare-policies/compare-policies';
 import { EligibilityChecker } from './pages/eligibility-checker/eligibility-checker';
+import { AnalyticsComponent } from './pages/analytics/analytics';
 import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
@@ -24,6 +25,7 @@ export const routes: Routes = [
   { path: 'schemes', component: SchemeList, canActivate: [authGuard] },
   { path: 'compare', component: ComparePolicies, canActivate: [authGuard] },
   { path: 'eligibility', component: EligibilityChecker, canActivate: [authGuard] },
+  { path: 'analytics', component: AnalyticsComponent, canActivate: [authGuard] },
   { path: 'notifications', component: Notifications, canActivate: [authGuard] },
   { path: 'feedback', component: Feedback, canActivate: [authGuard] },
   { path: 'reports', component: Reports, canActivate: [authGuard] },

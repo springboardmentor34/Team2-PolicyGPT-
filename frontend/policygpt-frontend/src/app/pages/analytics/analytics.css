@@ -1,0 +1,139 @@
+.dashboard-container {
+    padding: 24px;
+    font-family: 'Roboto', 'Inter', sans-serif;
+    color: var(--color-text-dark, #333);
+}
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.kpi-card {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.kpi-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.kpi-card.border-left-saffron {
+    border-left: 4px solid #FF9933;
+}
+
+.kpi-card.border-left-blue {
+    border-left: 4px solid #000080;
+}
+
+.kpi-card.border-left-green {
+    border-left: 4px solid #138808;
+}
+
+.kpi-icon {
+    font-size: 2.5rem;
+    padding: 12px;
+    border-radius: 50%;
+    background: #f5f5f5;
+}
+
+.kpi-icon.saffron {
+    color: #FF9933;
+    background: rgba(255, 153, 51, 0.1);
+}
+
+.kpi-icon.blue {
+    color: #000080;
+    background: rgba(0, 0, 128, 0.1);
+}
+
+.kpi-icon.green {
+    color: #138808;
+    background: rgba(19, 136, 8, 0.1);
+}
+
+.kpi-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-title {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.kpi-value {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #333;
+    margin-top: 4px;
+}
+
+.chart-card {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+.chart-title {
+    margin: 0 0 16px 0;
+    color: #000080;
+    font-size: 1.1rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 8px;
+}
+
+.chart-wrapper {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+.ai-insight-card {
+    background: linear-gradient(to right bottom, rgba(255, 255, 255, 0.9), rgba(245, 245, 250, 0.9));
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 128, 0.1);
+    border: 1px solid rgba(0, 0, 128, 0.15);
+}
+
+.insight-row {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    align-items: flex-start;
+}
+
+.insight-row:last-child {
+    margin-bottom: 0;
+}
+
+.insight-icon {
+    margin-top: 2px;
+}
+
+.insight-content p {
+    margin: 4px 0 0 0;
+    color: #444;
+}
+
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}

@@ -23,6 +23,7 @@ from app.routers.scheme import router as scheme_router
 from app.routers.feedback import router as feedback_router
 from app.routers.notification import router as notification_router
 from app.routers.report import router as report_router
+from app.routers.analytics import router as analytics_router
 
 # Create all database tables
 Base.metadata.create_all(bind=engine)
@@ -228,6 +229,7 @@ app.include_router(scheme_router, prefix="/schemes", tags=["Government Schemes"]
 app.include_router(feedback_router)
 app.include_router(notification_router)
 app.include_router(report_router)
+app.include_router(analytics_router)
 
 
 @app.get("/", tags=["Health"])

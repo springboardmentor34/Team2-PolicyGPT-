@@ -71,6 +71,10 @@ export class App implements OnInit {
     return this.isGovernmentOfficial || this.isAdministrator;
   }
 
+  get canViewAnalytics(): boolean {
+    return this.isGovernmentOfficial || this.isAdministrator;
+  }
+
   toggleTheme() {
     this.isDarkMode = !this.isDarkMode;
     this.applyTheme();
