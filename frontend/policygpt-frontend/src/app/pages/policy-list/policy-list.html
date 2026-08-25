@@ -443,7 +443,12 @@
 
   <!-- Policies List -->
   <div style="display: flex; flex-direction: column; gap: 20px;">
-    <div *ngIf="filteredPolicies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 60px;"
+    <div *ngIf="isLoadingData" style="text-align: center; color: var(--color-text-muted); padding: 60px;" class="glass-container">
+      <i class="material-icons" style="font-size: 3rem; color: var(--color-blue); animation: spin 1.5s linear infinite; margin-bottom: 12px;">sync</i>
+      <div style="font-size: 1.2rem; font-weight: 600; color: var(--color-blue);">Loading Government Policies...</div>
+    </div>
+
+    <div *ngIf="!isLoadingData && filteredPolicies.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 60px;"
       class="glass-container">
       <i class="material-icons" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 12px;">inbox</i>
       <div style="font-size: 1.2rem; font-weight: 600;">No matching policies found.</div>

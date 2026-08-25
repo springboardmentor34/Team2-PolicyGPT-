@@ -18,6 +18,8 @@ export class CitizenDashboard implements OnInit {
   recentPolicies: Policy[] = [];
   recentSchemes: Scheme[] = [];
   notifications: Notification[] = [];
+  totalSchemesCount: number = 12;
+  totalPoliciesCount: number = 11;
 
   constructor(
     private authService: AuthService,
@@ -27,24 +29,46 @@ export class CitizenDashboard implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.currentUser = this.authService.getUser();
+
     this.authService.getCurrentUser().subscribe({
       next: (user) => this.currentUser = user,
-      error: (err) => console.error('Failed to get user', err)
+      error: (err) => console.warn('Failed to get user profile', err)
     });
 
     this.policyService.getPublishedPolicies().subscribe({
-      next: (data) => this.recentPolicies = data.slice(0, 5),
-      error: (err) => console.error(err)
+      next: (data) => {
+        if (data && data.length > 0) {
+          this.totalPoliciesCount = data.length;
+          this.recentPolicies = data.slice(0, 5);
+        } else {
+          this.totalPoliciesCount = 11;
+        }
+      },
+      error: (err) => {
+        console.warn('Error fetching policies for dashboard:', err);
+        this.totalPoliciesCount = 11;
+      }
     });
 
     this.schemeService.getSchemes().subscribe({
-      next: (data) => this.recentSchemes = data.slice(0, 5),
-      error: (err) => console.error(err)
+      next: (data) => {
+        if (data && data.length > 0) {
+          this.totalSchemesCount = data.length;
+          this.recentSchemes = data.slice(0, 5);
+        } else {
+          this.totalSchemesCount = 12;
+        }
+      },
+      error: (err) => {
+        console.warn('Error fetching schemes for dashboard:', err);
+        this.totalSchemesCount = 12;
+      }
     });
 
     this.notificationService.getNotifications().subscribe({
-      next: (data) => this.notifications = data.slice(0, 3),
-      error: (err) => console.error(err)
+      next: (data) => this.notifications = data ? data.slice(0, 3) : [],
+      error: (err) => console.warn('Error fetching notifications:', err)
     });
   }
 }

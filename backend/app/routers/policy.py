@@ -31,6 +31,7 @@ router = APIRouter(
 )
 
 
+@router.post("", response_model=PolicyResponse)
 @router.post("/", response_model=PolicyResponse)
 def create_policy(
     policy: PolicyCreate,
@@ -45,6 +46,7 @@ def create_policy(
     return create_policy_service(db, policy, current_user.id)
 
 
+@router.get("", response_model=list[PolicyResponse])
 @router.get("/", response_model=list[PolicyResponse])
 def get_all_policies(
     db: Session = Depends(get_db),
@@ -53,16 +55,17 @@ def get_all_policies(
     role = current_user.role.upper()
     if role == "ADMINISTRATOR":
         return get_all_policies_service(db)
-    elif role == "GOVERNMENT_OFFICIAL":
-        # Return only policies created by this official
+    elif "OFFICIAL" in role:
         all_policies = get_all_policies_service(db)
-        return [p for p in all_policies if p.created_by == current_user.id]
+        # Return policies created by this official OR any published policy
+        return [p for p in all_policies if p.created_by == current_user.id or (p.status or "").upper() == "PUBLISHED"]
     else:
-        # CITIZEN and others see only published
+        # CITIZEN and others see all published policies
         return get_published_policies_service(db)
 
 
 @router.get("/pending-approval", response_model=list[PolicyResponse])
+@router.get("/pending-approval/", response_model=list[PolicyResponse])
 def get_pending_policies(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -76,6 +79,7 @@ def get_pending_policies(
 
 
 @router.get("/published", response_model=list[PolicyResponse])
+@router.get("/published/", response_model=list[PolicyResponse])
 def get_published_policies(
     db: Session = Depends(get_db),
 ):

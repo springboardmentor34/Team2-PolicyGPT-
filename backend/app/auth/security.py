@@ -30,17 +30,19 @@ from sqlalchemy.orm import Session
 
 from app.database.database import get_db
 
+import os
+
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-SECRET_KEY = "policygpt_super_secret_key_2024"   # Use env var in production
-ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+SECRET_KEY = os.getenv("SECRET_KEY", "policygpt_secret_jwt_key_2026")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440"))
 
 # ---------------------------------------------------------------------------
-# Password hashing
+# Password hashing (Optimized rounds for instant login verification)
 # ---------------------------------------------------------------------------
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__default_rounds=10)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 

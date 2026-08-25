@@ -12,7 +12,7 @@ export interface Scheme {
   status: string;
   eligibility_criteria?: string;
   benefits?: string;
-  created_at: string;
+  created_at?: string;
 }
 
 @Injectable({

@@ -43,7 +43,7 @@
       <h3 style="color: var(--color-saffron); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
         🎯 Active Schemes
       </h3>
-      <div class="stat-value">{{ recentSchemes.length }}</div>
+      <div class="stat-value">{{ totalSchemesCount }}</div>
       <p style="color: var(--color-text-muted); margin-bottom: 24px;">Government Schemes Available</p>
       <button class="btn-primary" style="width: 100%;" routerLink="/schemes">
         <i class="material-icons">search</i> View Schemes
@@ -79,7 +79,7 @@
       <h3 style="color: var(--color-green); font-size: 1.4rem; display: flex; align-items: center; justify-content: center; gap: 8px;">
         📜 Published Policies
       </h3>
-      <div class="stat-value" style="color: var(--color-green);">{{ recentPolicies.length }}</div>
+      <div class="stat-value" style="color: var(--color-green);">{{ totalPoliciesCount }}</div>
       <p style="color: var(--color-text-muted); margin-bottom: 24px;">Approved & Published Policies</p>
       <button class="btn-success" style="width: 100%;" routerLink="/policies">
         <i class="material-icons">policy</i> View Policies

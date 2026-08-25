@@ -22,6 +22,9 @@ from app.auth.security import hash_password
 # Ensure tables exist
 Base.metadata.create_all(bind=engine)
 
+from app.main import run_migrations
+run_migrations()
+
 def seed():
     db = SessionLocal()
     try:
@@ -51,6 +54,7 @@ def seed():
             db.refresh(admin)
 
         # 2. Seed Published Policies
+        db.query(AuditLog).delete()
         db.query(Policy).delete()
         policies_data = [
             {
@@ -102,6 +106,56 @@ def seed():
                 "status": "PUBLISHED",
                 "created_by": official.id,
                 "reviewed_by": admin.id,
+            },
+            {
+                "title": "National Semiconductor & AI Mission Policy",
+                "description": "Financial incentives up to 50% project cost for setting up semiconductor fabs, microchip design facilities, and sovereign AI compute infrastructure.",
+                "category": "IT & Electronics",
+                "department": "Ministry of Electronics and IT",
+                "state": "All India",
+                "status": "PUBLISHED",
+                "created_by": official.id,
+                "reviewed_by": admin.id,
+            },
+            {
+                "title": "PM Gati Shakti National Master Plan Policy",
+                "description": "Integrated multimodal connectivity platform synchronizing infrastructure development across Railways, Roadways, Ports, and Waterways.",
+                "category": "Infrastructure",
+                "department": "Ministry of Road Transport & Highways",
+                "state": "All India",
+                "status": "PUBLISHED",
+                "created_by": official.id,
+                "reviewed_by": admin.id,
+            },
+            {
+                "title": "Production Linked Incentive (PLI) Scheme Policy",
+                "description": "Financial incentives worth ₹1.97 Lakh Crore across 14 strategic sectors including electronics, EV batteries, solar modules, and pharmaceuticals.",
+                "category": "Manufacturing & Trade",
+                "department": "Ministry of Heavy Industries",
+                "state": "All India",
+                "status": "PUBLISHED",
+                "created_by": official.id,
+                "reviewed_by": admin.id,
+            },
+            {
+                "title": "National Clean Air Programme (NCAP) Guidelines",
+                "description": "Targeted 40% reduction in particulate matter concentration across 131 non-attainment cities through green transport and industrial emission norms.",
+                "category": "Environment & Energy",
+                "department": "Ministry of Environment, Forest and Climate Change",
+                "state": "All India",
+                "status": "PUBLISHED",
+                "created_by": official.id,
+                "reviewed_by": admin.id,
+            },
+            {
+                "title": "Cyber Security & Data Governance Policy",
+                "description": "National framework for critical information infrastructure protection, data privacy compliance, CERT-In incident reporting, and digital citizen protection.",
+                "category": "IT & Electronics",
+                "department": "Ministry of Electronics and IT",
+                "state": "All India",
+                "status": "PUBLISHED",
+                "created_by": official.id,
+                "reviewed_by": admin.id,
             }
         ]
 
@@ -110,7 +164,8 @@ def seed():
             db.add(p)
         db.commit()
 
-        # 3. Seed Schemes (8 Comprehensive Welfare Schemes)
+        # 3. Seed Schemes (12 Comprehensive Welfare Schemes)
+        db.query(EligibilityRule).delete()
         db.query(Scheme).delete()
         schemes_data = [
             {
@@ -192,6 +247,46 @@ def seed():
                 "status": "Active",
                 "eligibility_criteria": "Any Indian citizen in the unorganized sector aged between 18 and 40 years holding a bank account.",
                 "benefits": "Guaranteed monthly pension of ₹1,000 to ₹5,000 after age 60, with pension continuation to spouse upon subscriber death."
+            },
+            {
+                "title": "PM SVANidhi Scheme for Street Vendors",
+                "description": "Special micro-credit facility providing affordable working capital loans to urban street vendors to resume livelihoods.",
+                "category": "Employment & Livelihood",
+                "department": "Ministry of Housing and Urban Affairs",
+                "state": "All India",
+                "status": "Active",
+                "eligibility_criteria": "Urban street vendors holding Vending Certificate / Identity Card or recommendation letter from Urban Local Body.",
+                "benefits": "Collateral-free working capital loan of ₹10,000 (1st tranche), ₹20,000 (2nd tranche), and ₹50,000 (3rd tranche) with 7% interest subsidy."
+            },
+            {
+                "title": "Pradhan Mantri Ujjwala Yojana (PMUY 2.0)",
+                "description": "Flagship social welfare scheme providing deposit-free LPG connections to women from below poverty line households.",
+                "category": "Energy & Social Welfare",
+                "department": "Ministry of Petroleum and Natural Gas",
+                "state": "All India",
+                "status": "Active",
+                "eligibility_criteria": "Adult woman belonging to BPL household / SC / ST / Most Backward Classes with no existing LPG connection in household.",
+                "benefits": "Free LPG connection with financial assistance of ₹1,600 per connection, first refill and hotplate free of cost."
+            },
+            {
+                "title": "Stand-Up India Scheme",
+                "description": "Promotes entrepreneurship at grassroot level among Women and SC/ST communities by facilitating bank loans.",
+                "category": "Finance & Business",
+                "department": "Ministry of Finance",
+                "state": "All India",
+                "status": "Active",
+                "eligibility_criteria": "SC/ST and/or woman entrepreneurs above 18 years of age setting up greenfield enterprises.",
+                "benefits": "Bank loans between ₹10 Lakhs and ₹1 Crore for setting up manufacturing, services, trading, or agriculture-allied sector enterprises."
+            },
+            {
+                "title": "National Apprenticeship Promotion Scheme (NAPS)",
+                "description": "Initiative to promote apprenticeship training nationwide and incentivize employers to engage apprentices.",
+                "category": "Skill & Youth",
+                "department": "Ministry of Skill Development and Entrepreneurship",
+                "state": "All India",
+                "status": "Active",
+                "eligibility_criteria": "Youth aged 14 years and above having completed minimum 5th standard to ITI/Diploma/Graduate.",
+                "benefits": "Government shares 25% of prescribed stipend up to ₹1,500 per month per apprentice directly transferred via DBT."
             }
         ]
 
@@ -200,7 +295,39 @@ def seed():
             db.add(s)
         db.commit()
 
-        print(f"Successfully seeded {len(policies_data)} policies and {len(schemes_data)} schemes!")
+        # 4. Seed Sample Feedback entries
+        if db.query(Feedback).count() == 0:
+            sample_feedbacks = [
+                Feedback(
+                    user_name="Ravi",
+                    rating=5,
+                    message="Very useful",
+                    subject="Feedback Rating: 5/5",
+                    content="Very useful",
+                    status="Open",
+                    user_id=official.id
+                ),
+                Feedback(
+                    user_name="Priya Sharma",
+                    rating=5,
+                    message="Great platform to compare government policies and eligibility rules.",
+                    subject="Feedback Rating: 5/5",
+                    content="Great platform to compare government policies and eligibility rules.",
+                    status="Open"
+                ),
+                Feedback(
+                    user_name="Amit Patel",
+                    rating=4,
+                    message="Easy to search schemes, please add more state-specific filter options.",
+                    subject="Feedback Rating: 4/5",
+                    content="Easy to search schemes, please add more state-specific filter options.",
+                    status="Open"
+                )
+            ]
+            db.add_all(sample_feedbacks)
+            db.commit()
+
+        print(f"Successfully seeded {len(policies_data)} policies, {len(schemes_data)} schemes, and sample feedback!")
     finally:
         db.close()
 
