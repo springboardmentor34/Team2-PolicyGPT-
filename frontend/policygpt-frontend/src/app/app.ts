@@ -48,7 +48,17 @@ export class App implements OnInit {
 
   ngOnInit() {
     this.syncUser();
-    // Check system preference on load
+    
+    // Restore saved language preference
+    const savedLangCode = localStorage.getItem('policygpt_lang');
+    if (savedLangCode) {
+      const lang = this.languages.find(l => l.code === savedLangCode);
+      if (lang) {
+        this.selectedLang = lang;
+      }
+    }
+
+    // Check system dark mode preference on load
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       this.isDarkMode = true;
       this.applyTheme();
@@ -74,9 +84,32 @@ export class App implements OnInit {
 
   changeLanguage(event: Event) {
     const select = event.target as HTMLSelectElement;
-    const lang = this.languages.find(l => l.code === select.value);
+    const langCode = select.value;
+    const lang = this.languages.find(l => l.code === langCode);
     if (lang) {
       this.selectedLang = lang;
+      this.applyLanguage(langCode);
+    }
+  }
+
+  applyLanguage(langCode: string) {
+    localStorage.setItem('policygpt_lang', langCode);
+
+    // Set Google Translate cookie
+    const domain = window.location.hostname;
+    document.cookie = `googtrans=/en/${langCode}; path=/`;
+    document.cookie = `googtrans=/en/${langCode}; domain=${domain}; path=/`;
+
+    // Trigger translate widget dropdown if rendered
+    const googCombo = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+    if (googCombo) {
+      googCombo.value = langCode;
+      googCombo.dispatchEvent(new Event('change'));
+    } else {
+      // Reload page to apply translation cookies across all components
+      setTimeout(() => {
+        window.location.reload();
+      }, 150);
     }
   }
 
