@@ -95,7 +95,8 @@ def run_migrations():
                 seed_users = [
                     {"email": "official@policygpt.gov.in", "password": "Password123", "full_name": "Official Administrator", "role": "government_official"},
                     {"email": "admin@policygpt.gov.in", "password": "Password123", "full_name": "Main Administrator", "role": "administrator"},
-                    {"email": "citizen@policygpt.gov.in", "password": "Password123", "full_name": "Citizen User", "role": "citizen"}
+                    {"email": "citizen@policygpt.gov.in", "password": "Password123", "full_name": "Citizen User", "role": "citizen"},
+                    {"email": "researcher@policygpt.gov.in", "password": "Password123", "full_name": "Senior Policy Researcher", "role": "researcher"}
                 ]
                 for su in seed_users:
                     exists = db.query(User).filter(User.email == su["email"]).first()

@@ -46,36 +46,23 @@ export class ReportService {
   }
 
   openPdfInNewTab(): void {
-    this.getPdfBlob().subscribe({
-      next: (blob) => {
-        const pdfBlob = new Blob([blob], { type: 'application/pdf' });
-        const fileURL = URL.createObjectURL(pdfBlob);
-        window.open(fileURL, '_blank');
-      },
-      error: (err) => {
-        console.error('PDF View Error:', err);
-        window.open(`${this.API_URL}/export/pdf`, '_blank');
-      }
-    });
+    window.open(`${this.API_URL}/export/pdf`, '_blank');
   }
 
   downloadPdfReport(customFilename: string = 'PolicyGPT_System_Summary_Report.pdf'): void {
     this.getPdfBlob().subscribe({
       next: (blob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const dataUrl = reader.result as string;
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = dataUrl;
-          a.download = customFilename;
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(() => {
-            document.body.removeChild(a);
-          }, 300);
-        };
-        reader.readAsDataURL(blob);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = customFilename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 1000);
       },
       error: (err) => {
         console.error('PDF Report Download Error:', err);
@@ -86,20 +73,17 @@ export class ReportService {
   downloadExcelReport(customFilename: string = 'PolicyGPT_Analytics_Report.xlsx'): void {
     this.getExcelBlob().subscribe({
       next: (blob) => {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const dataUrl = reader.result as string;
-          const a = document.createElement('a');
-          a.style.display = 'none';
-          a.href = dataUrl;
-          a.download = customFilename;
-          document.body.appendChild(a);
-          a.click();
-          setTimeout(() => {
-            document.body.removeChild(a);
-          }, 300);
-        };
-        reader.readAsDataURL(blob);
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.style.display = 'none';
+        a.href = url;
+        a.download = customFilename;
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          window.URL.revokeObjectURL(url);
+        }, 1000);
       },
       error: (err) => {
         console.error('Excel Report Download Error:', err);

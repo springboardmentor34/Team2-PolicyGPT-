@@ -106,3 +106,24 @@ def get_current_user(
             headers={"WWW-Authenticate": "Bearer"},
         )
     return user
+
+
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
+
+
+def get_optional_current_user(
+    token: Optional[str] = Depends(oauth2_scheme_optional),
+    db: Session = Depends(get_db),
+):
+    if not token:
+        return None
+    try:
+        from app.models.user import User
+        payload = decode_access_token(token)
+        email: str = payload.get("sub")
+        if email:
+            return db.query(User).filter(User.email == email).first()
+    except Exception:
+        pass
+    return None
+

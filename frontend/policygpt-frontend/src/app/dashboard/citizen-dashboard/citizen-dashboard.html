@@ -1,15 +1,85 @@
-<div style="max-width: 1400px; margin: 0 auto;">
+<div style="max-width: 1400px; margin: 0 auto; padding-bottom: 60px;">
   
   <!-- Welcome Banner -->
-  <div class="glass-container" style="margin-bottom: 32px; text-align: center; position: relative; overflow: hidden; min-height: 200px; display: flex; flex-direction: column; justify-content: center; border-top: 4px solid var(--color-saffron);">
+  <div class="glass-container" style="margin-bottom: 32px; text-align: center; position: relative; overflow: hidden; min-height: 180px; display: flex; flex-direction: column; justify-content: center; border-top: 4px solid var(--color-saffron);">
     <div style="position: relative; z-index: 1;">
       <h1 style="color: var(--color-blue); font-size: 2.3rem; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 12px;">
         <i class="material-icons" style="font-size: 2.8rem; color: var(--color-saffron);">account_balance</i>
-        Welcome back, {{ currentUser?.full_name || 'Citizen' }}!
+        Welcome back, {{ currentUser?.full_name || 'Researcher' }}!
       </h1>
       <p style="color: var(--color-text-muted); font-size: 1.15rem; font-weight: 500; margin: 0;">
-        Role Access Level: <strong style="color: var(--color-saffron); text-transform: uppercase;">{{ currentUser?.role || 'CITIZEN' }}</strong> 🇮🇳
+        Role Access Level: <strong style="color: var(--color-saffron); text-transform: uppercase;">{{ currentUser?.role || 'RESEARCHER' }}</strong> 🇮🇳
       </p>
+    </div>
+  </div>
+
+  <!-- Analytics & Report Generation Section (Researcher Dashboard) -->
+  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-green); border-radius: 16px; padding: 24px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px;">
+      <div>
+        <h2 style="color: var(--color-green); margin: 0 0 6px 0; display: flex; align-items: center; gap: 12px; font-weight: 700;">
+          <i class="material-icons" style="font-size: 2.2rem;">assessment</i> Analytics & Report Generation
+        </h2>
+        <p style="color: var(--color-text-muted); margin: 0; font-size: 1rem;">
+          Generate and export official system intelligence reports, statistics, and policy impact metrics.
+        </p>
+      </div>
+
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <button class="btn-primary" (click)="openPdfTab()" style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; border-radius: 10px; background: var(--color-blue);">
+          <i class="material-icons">open_in_new</i> View PDF Document in Tab
+        </button>
+        <button class="btn-primary" (click)="openReportViewer()" style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; border-radius: 10px; background: rgba(30, 58, 138, 0.8);">
+          <i class="material-icons">visibility</i> Preview Report Modal
+        </button>
+        <button class="btn-success" (click)="downloadPdf()" style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; border-radius: 10px;">
+          <i class="material-icons">picture_as_pdf</i> Save PDF (.pdf)
+        </button>
+        <button class="btn-primary" (click)="downloadExcel()" style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; font-weight: 600; border-radius: 10px; background: #0D9488;">
+          <i class="material-icons">table_chart</i> Save Excel (.xlsx)
+        </button>
+      </div>
+    </div>
+
+    <!-- Real-Time Metrics Cards inside Researcher Dashboard -->
+    <div *ngIf="summary" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px;">
+      
+      <div class="glass-container" style="padding: 20px; border-left: 5px solid var(--color-blue); border-radius: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="color: var(--color-text-muted); font-size: 0.85rem; font-weight: 600;">TOTAL POLICIES</span>
+          <i class="material-icons" style="color: var(--color-blue); font-size: 1.8rem;">article</i>
+        </div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--color-blue);">{{ summary.total_policies }}</div>
+        <div style="font-size: 0.85rem; color: var(--color-green); margin-top: 4px;">{{ summary.published_policies }} Published</div>
+      </div>
+
+      <div class="glass-container" style="padding: 20px; border-left: 5px solid var(--color-green); border-radius: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="color: var(--color-text-muted); font-size: 0.85rem; font-weight: 600;">WELFARE SCHEMES</span>
+          <i class="material-icons" style="color: var(--color-green); font-size: 1.8rem;">account_balance</i>
+        </div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--color-green);">{{ summary.total_schemes }}</div>
+        <div style="font-size: 0.85rem; color: var(--color-green); margin-top: 4px;">{{ summary.active_schemes }} Active Schemes</div>
+      </div>
+
+      <div class="glass-container" style="padding: 20px; border-left: 5px solid var(--color-saffron); border-radius: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="color: var(--color-text-muted); font-size: 0.85rem; font-weight: 600;">USER FEEDBACK</span>
+          <i class="material-icons" style="color: var(--color-saffron); font-size: 1.8rem;">feedback</i>
+        </div>
+        <div style="font-size: 2rem; font-weight: 800; color: var(--color-saffron);">{{ summary.total_feedback }}</div>
+        <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">Rating: {{ summary.average_rating }} / 5.0 ★</div>
+      </div>
+
+      <div class="glass-container" style="padding: 20px; border-left: 5px solid #8b5cf6; border-radius: 14px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+          <span style="color: var(--color-text-muted); font-size: 0.85rem; font-weight: 600;">PENDING REVIEW</span>
+          <i class="material-icons" style="color: #8b5cf6; font-size: 1.8rem;">pending_actions</i>
+        </div>
+        <div style="font-size: 2rem; font-weight: 800; color: #8b5cf6;">{{ summary.pending_policies }}</div>
+        <div style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 4px;">Awaiting Admin Review</div>
+      </div>
+
     </div>
   </div>
 
@@ -129,6 +199,70 @@
       <div *ngIf="recentPolicies.length === 0 && recentSchemes.length === 0" style="text-align: center; padding: 20px; color: var(--color-text-muted);">
         No recent data available.
       </div>
+    </div>
+  </div>
+
+  <!-- Interactive Report Viewer Modal -->
+  <div *ngIf="showReportViewer" class="modal-overlay fade-in" (click)="closeReportViewer()" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; backdrop-filter: blur(6px);">
+    <div class="glass-container slide-up" (click)="$event.stopPropagation()" style="width: 100%; max-width: 900px; max-height: 90vh; overflow-y: auto; background: var(--bg-card, #ffffff); border-radius: 20px; padding: 32px; border-top: 6px solid var(--color-blue); box-shadow: 0 20px 50px rgba(0,0,0,0.3);">
+      
+      <!-- Modal Header -->
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 24px; border-bottom: 2px solid var(--glass-border); padding-bottom: 16px;">
+        <div>
+          <h3 style="margin: 0 0 6px 0; color: var(--color-blue); font-size: 1.6rem; font-weight: 800; display: flex; align-items: center; gap: 10px;">
+            <i class="material-icons" style="color: var(--color-saffron); font-size: 2rem;">verified</i>
+            {{ selectedReportTitle }}
+          </h3>
+          <div style="font-size: 0.9rem; color: var(--color-text-muted);">
+            Report Type: <strong>{{ selectedReportType }}</strong> &bull; Generated: {{ selectedReportDate | date:'medium' }}
+          </div>
+        </div>
+        <button (click)="closeReportViewer()" style="background: none; border: none; font-size: 1.8rem; cursor: pointer; color: var(--color-text-muted);">
+          &times;
+        </button>
+      </div>
+
+      <!-- Live Executive Summary Section inside Modal -->
+      <div style="background: rgba(30, 58, 138, 0.04); border-radius: 12px; padding: 20px; margin-bottom: 24px; border-left: 4px solid var(--color-blue);">
+        <h4 style="margin: 0 0 12px 0; color: var(--color-blue); font-size: 1.1rem;">
+          <i class="material-icons" style="vertical-align: middle; margin-right: 6px;">analytics</i> Executive Summary Highlights
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px;" *ngIf="summary">
+          <div>
+            <div style="font-size: 0.82rem; color: var(--color-text-muted);">Published Policies</div>
+            <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-blue);">{{ summary.published_policies }} / {{ summary.total_policies }}</div>
+          </div>
+          <div>
+            <div style="font-size: 0.82rem; color: var(--color-text-muted);">Active Welfare Schemes</div>
+            <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-green);">{{ summary.active_schemes }} / {{ summary.total_schemes }}</div>
+          </div>
+          <div>
+            <div style="font-size: 0.82rem; color: var(--color-text-muted);">Citizen Reviews</div>
+            <div style="font-size: 1.4rem; font-weight: 700; color: var(--color-saffron);">{{ summary.total_feedback }} Submissions</div>
+          </div>
+          <div>
+            <div style="font-size: 0.82rem; color: var(--color-text-muted);">Platform Satisfaction</div>
+            <div style="font-size: 1.4rem; font-weight: 700; color: #8b5cf6;">{{ summary.average_rating }} / 5.0 ★</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Toolbar inside Modal -->
+      <div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; border-top: 1px solid var(--glass-border); padding-top: 20px; flex-wrap: wrap;">
+        <button class="btn-primary" (click)="openPdfTab()" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; background: var(--color-blue); display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons">open_in_new</i> Open PDF Document in New Tab
+        </button>
+        <button class="btn-success" (click)="downloadPdf()" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons">picture_as_pdf</i> Save PDF (.pdf)
+        </button>
+        <button class="btn-primary" (click)="downloadExcel()" style="padding: 10px 24px; border-radius: 8px; font-weight: 600; background: #0D9488; display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons">table_chart</i> Save Excel (.xlsx)
+        </button>
+        <button class="btn-primary" (click)="closeReportViewer()" style="padding: 10px 20px; border-radius: 8px; background: rgba(0,0,0,0.1); color: var(--color-text);">
+          Close Preview
+        </button>
+      </div>
+
     </div>
   </div>
 

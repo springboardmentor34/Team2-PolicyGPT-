@@ -10,7 +10,7 @@ from app.services.report_service import (
     generate_excel_report_bytes
 )
 
-from app.auth.security import get_current_user
+from app.auth.security import get_optional_current_user
 from app.models.user import User
 
 router = APIRouter(
@@ -36,7 +36,7 @@ def get_report_summary(
 @router.get("/export/pdf")
 def export_pdf_report(
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     """Generate and download a PDF report containing Schemes, Policies, and Feedback data."""
     pdf_bytes = generate_pdf_report_bytes(db)
@@ -44,7 +44,7 @@ def export_pdf_report(
         content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            "Content-Disposition": 'attachment; filename="PolicyGPT_System_Summary_Report.pdf"',
+            "Content-Disposition": 'inline; filename="PolicyGPT_System_Summary_Report.pdf"',
             "Access-Control-Expose-Headers": "Content-Disposition"
         }
     )
@@ -52,7 +52,7 @@ def export_pdf_report(
 @router.get("/export/excel")
 def export_excel_report(
     db: Session = Depends(get_db),
-    current_user: Optional[User] = Depends(get_current_user)
+    current_user: Optional[User] = Depends(get_optional_current_user)
 ):
     """Generate and download an Excel/CSV spreadsheet report containing Schemes, Policies, and Feedback data."""
     excel_bytes = generate_excel_report_bytes(db)
