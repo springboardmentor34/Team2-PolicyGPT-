@@ -13,7 +13,7 @@ export interface Policy {
   created_by?: number;
   reviewed_by?: number;
   review_comment?: string;
-  created_at: string;
+  created_at?: string;
   updated_at?: string;
   reviewed_at?: string;
   published_at?: string;

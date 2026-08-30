@@ -32,21 +32,47 @@ Base.metadata.create_all(bind=engine)
 def run_migrations():
     from sqlalchemy import text
     statements = [
-        # policies table — Milestone 2 workflow columns
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255);",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS full_name VARCHAR(100);",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50) DEFAULT 'citizen';",
+        "ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(100);",
+        "ALTER TABLE users ALTER COLUMN hashed_password DROP NOT NULL;",
         "ALTER TABLE policies ADD COLUMN IF NOT EXISTS created_by INTEGER REFERENCES users(id);",
         "ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_by INTEGER REFERENCES users(id);",
         "ALTER TABLE policies ADD COLUMN IF NOT EXISTS review_comment TEXT;",
         "ALTER TABLE policies ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP;",
         "ALTER TABLE policies ADD COLUMN IF NOT EXISTS reviewed_at TIMESTAMP;",
         "ALTER TABLE policies ADD COLUMN IF NOT EXISTS published_at TIMESTAMP;",
-        # audit_logs table — Milestone 2 workflow tracking columns
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS entity VARCHAR(50);",
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS entity_id INTEGER;",
         "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS old_status VARCHAR;",
         "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS new_status VARCHAR;",
         "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS comment TEXT;",
         "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS policy_id INTEGER REFERENCES policies(id);",
-        # schemes table — Manaswini's Milestone 2 additions
+        "ALTER TABLE audit_logs ADD COLUMN IF NOT EXISTS timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP;",
+        "ALTER TABLE notifications ALTER COLUMN title DROP NOT NULL;",
+        "ALTER TABLE notifications ADD COLUMN IF NOT EXISTS message TEXT;",
+        "ALTER TABLE notifications ADD COLUMN IF NOT EXISTS type VARCHAR(50);",
+        "ALTER TABLE notifications ADD COLUMN IF NOT EXISTS is_read BOOLEAN DEFAULT FALSE;",
         "ALTER TABLE schemes ADD COLUMN IF NOT EXISTS eligibility_criteria TEXT;",
         "ALTER TABLE schemes ADD COLUMN IF NOT EXISTS benefits TEXT;",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS user_name VARCHAR(100);",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS rating INTEGER DEFAULT 5;",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS message TEXT;",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS subject VARCHAR(255);",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS content TEXT;",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS comments TEXT;",
+        "ALTER TABLE feedback ALTER COLUMN comments DROP NOT NULL;",
+        "ALTER TABLE feedback ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'Open';",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS report_type VARCHAR(100);",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS generated_by VARCHAR(100);",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS file_path VARCHAR(255);",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS file_url VARCHAR(255);",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS title VARCHAR(255);",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS content TEXT;",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS summary TEXT;",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS created_by INTEGER;",
+        "ALTER TABLE reports ADD COLUMN IF NOT EXISTS created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP;"
     ]
     try:
         with engine.connect() as conn:
@@ -70,7 +96,8 @@ def run_migrations():
                 seed_users = [
                     {"email": "official@policygpt.gov.in", "password": "Password123", "full_name": "Official Administrator", "role": "government_official"},
                     {"email": "admin@policygpt.gov.in", "password": "Password123", "full_name": "Main Administrator", "role": "administrator"},
-                    {"email": "citizen@policygpt.gov.in", "password": "Password123", "full_name": "Citizen User", "role": "citizen"}
+                    {"email": "citizen@policygpt.gov.in", "password": "Password123", "full_name": "Citizen User", "role": "citizen"},
+                    {"email": "researcher@policygpt.gov.in", "password": "Password123", "full_name": "Senior Policy Researcher", "role": "researcher"}
                 ]
                 for su in seed_users:
                     exists = db.query(User).filter(User.email == su["email"]).first()
@@ -214,9 +241,12 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:4200", 
-        "http://localhost:58609"
+        "http://localhost:58609",
+        "http://127.0.0.1:4200", 
+        "http://localhost:8000", 
+        "http://127.0.0.1:8000"
     ],
-    allow_origin_regex="https?://localhost:.*",
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

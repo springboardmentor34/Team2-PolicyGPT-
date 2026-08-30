@@ -4,11 +4,15 @@ import { Observable } from 'rxjs';
 
 export interface Feedback {
   id: number;
-  user_id: number;
-  subject: string;
-  content: string;
-  status: string;
-  created_at: string;
+  user_id?: number;
+  user_name?: string;
+  rating?: number;
+  likes?: number;
+  subject?: string;
+  content?: string;
+  message?: string;
+  status?: string;
+  created_at?: string;
 }
 
 @Injectable({
@@ -23,7 +27,11 @@ export class FeedbackService {
     return this.http.get<Feedback[]>(this.API_URL + '/');
   }
 
-  createFeedback(feedback: { subject: string, content: string }): Observable<Feedback> {
+  createFeedback(feedback: { subject?: string, content?: string, user_name?: string, rating?: number, message?: string }): Observable<Feedback> {
     return this.http.post<Feedback>(this.API_URL + '/', feedback);
+  }
+
+  deleteFeedback(id: number): Observable<any> {
+    return this.http.delete(`${this.API_URL}/${id}`);
   }
 }

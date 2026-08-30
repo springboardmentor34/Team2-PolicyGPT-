@@ -52,8 +52,7 @@ export class Login {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         this.isLoading = false;
-        this.successMessage = `Welcome back, ${res.user.full_name}! Redirecting to dashboard...`;
-        setTimeout(() => this.router.navigate(['/dashboard']), 800);
+        this.router.navigate(['/dashboard']);
       },
       error: (err) => {
         this.isLoading = false;

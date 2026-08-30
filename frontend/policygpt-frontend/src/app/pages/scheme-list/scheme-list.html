@@ -7,7 +7,7 @@
       </h2>
       <p style="color: var(--color-text-muted); margin: 0; font-size: 1.1rem;">Explore public welfare, financial inclusion, housing, and developmental schemes.</p>
     </div>
-    <button class="btn-primary" (click)="toggleForm()">
+    <button *ngIf="canManageSchemes" class="btn-primary" (click)="toggleForm()">
       <i class="material-icons">{{ showForm ? 'close' : 'add' }}</i> 
       {{ showForm ? 'Cancel' : 'Create Scheme' }}
     </button>
@@ -67,7 +67,12 @@
 
   <!-- Grid of Scheme Cards -->
   <div class="grid-cards">
-    <div *ngIf="schemes.length === 0" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px;" class="glass-container">
+    <div *ngIf="isLoadingData" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px;" class="glass-container">
+      <i class="material-icons" style="font-size: 3rem; color: var(--color-saffron); animation: spin 1.5s linear infinite; margin-bottom: 12px;">sync</i>
+      <div style="font-size: 1.2rem; font-weight: 600; color: var(--color-blue);">Loading Government Schemes...</div>
+    </div>
+
+    <div *ngIf="!isLoadingData && schemes.length === 0" style="grid-column: 1 / -1; text-align: center; color: var(--color-text-muted); padding: 60px;" class="glass-container">
       <i class="material-icons" style="font-size: 3rem; color: var(--color-text-muted); margin-bottom: 12px;">inbox</i>
       <div style="font-size: 1.2rem; font-weight: 600;">No schemes found.</div>
     </div>
@@ -108,7 +113,7 @@
         <span style="color: var(--color-text);">{{ scheme.benefits }}</span>
       </div>
       
-      <div style="margin-top: auto; display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 16px;">
+      <div *ngIf="canManageSchemes" style="margin-top: auto; display: flex; justify-content: space-between; gap: 12px; border-top: 1px solid var(--glass-border); padding-top: 16px;">
         <button class="btn-primary" style="flex: 1; padding: 8px 16px; font-size: 0.95rem;" (click)="editScheme(scheme)">Edit</button>
         <button class="btn-primary" style="background: rgba(255,0,0,0.15); color: #d9534f; border: 1px solid rgba(255,0,0,0.2); padding: 8px 16px; font-size: 0.95rem;" (click)="deleteScheme(scheme.id)">Delete</button>
       </div>
