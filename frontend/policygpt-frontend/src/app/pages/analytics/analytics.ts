@@ -1,7 +1,8 @@
-import { Component, OnInit, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ElementRef, ViewChild, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AnalyticsService, AnalyticsOverviewResponse } from '../../services/analytics.service';
 import { Chart, registerables } from 'chart.js';
+import { HttpErrorResponse } from '@angular/common/http';
 
 Chart.register(...registerables);
 
@@ -27,7 +28,10 @@ export class AnalyticsComponent implements OnInit, AfterViewInit {
     usageChart: Chart | null = null;
     schemeChart: Chart | null = null;
 
-    constructor(private analyticsService: AnalyticsService) { }
+    constructor(
+        private analyticsService: AnalyticsService,
+        private cdr: ChangeDetectorRef
+    ) { }
 
     ngOnInit(): void {
         this.loadAnalyticsData();
@@ -47,12 +51,22 @@ export class AnalyticsComponent implements OnInit, AfterViewInit {
             next: (data) => {
                 this.analyticsData = data;
                 this.loading = false;
+                this.cdr.detectChanges();
                 setTimeout(() => this.initCharts(), 100);
             },
-            error: (err) => {
+            error: (err: HttpErrorResponse) => {
                 console.error('Error fetching analytics:', err);
-                this.error = 'Failed to load analytics data. Please try again later.';
+                if (err.status === 401) {
+                    this.error = 'Your session has expired. Please log in again.';
+                } else if (err.status === 403) {
+                    this.error = 'You do not have permission to view administrative analytics.';
+                } else if (err.status === 500) {
+                    this.error = 'Analytics service is temporarily unavailable.';
+                } else {
+                    this.error = 'Unable to connect to the PolicyGPT server.';
+                }
                 this.loading = false;
+                this.cdr.detectChanges();
             }
         });
     }

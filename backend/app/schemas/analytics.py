@@ -51,3 +51,21 @@ class AnalyticsOverviewResponse(BaseModel):
     scheme_category_distribution: List[CategoryDistribution]
     usage_activity: UsageActivity
     insights: AIInsight
+
+class DepartmentKPIs(BaseModel):
+    total_policies: int
+    draft: int
+    pending_approval: int
+    approved: int
+    rejected: int
+    published: int
+    total_schemes: int
+
+class DepartmentAnalyticsResponse(BaseModel):
+    department: str
+    kpis: DepartmentKPIs
+    policy_status_distribution: PolicyStatusDistribution
+    policy_creation_trend: List[TrendPoint]
+    policy_category_distribution: List[CategoryDistribution]
+    scheme_category_distribution: List[CategoryDistribution]
+

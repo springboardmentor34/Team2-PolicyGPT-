@@ -3,6 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, FormsModule, Validators } from '@angular/forms';
 import { PolicyService, Policy } from '../../services/policy.service';
 import { AuthService, AuthUser } from '../../services/auth.service';
+import { AnalyticsService } from '../../services/analytics.service';
+import { Subject } from 'rxjs';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 @Component({
   selector: 'app-policy-list',
@@ -27,12 +30,12 @@ export class PolicyList implements OnInit {
   get filteredPolicies(): Policy[] {
     return this.policies.filter(p => {
       const q = this.searchQuery.toLowerCase().trim();
-      const matchesSearch = !q || 
-        p.title.toLowerCase().includes(q) || 
-        (p.description && p.description.toLowerCase().includes(q)) || 
-        (p.category && p.category.toLowerCase().includes(q)) || 
+      const matchesSearch = !q ||
+        p.title.toLowerCase().includes(q) ||
+        (p.description && p.description.toLowerCase().includes(q)) ||
+        (p.category && p.category.toLowerCase().includes(q)) ||
         (p.department && p.department.toLowerCase().includes(q));
-        
+
       const matchesCategory = this.selectedCategory === 'ALL' || p.category === this.selectedCategory;
       return matchesSearch && matchesCategory;
     });
@@ -60,10 +63,13 @@ export class PolicyList implements OnInit {
   selectedPolicyForDetails: Policy | null = null;
   showDetailsDialog = false;
 
+  searchSubject = new Subject<string>();
+
   constructor(
     private fb: FormBuilder,
     private policyService: PolicyService,
-    private authService: AuthService
+    private authService: AuthService,
+    private analyticsService: AnalyticsService
   ) {
     this.policyForm = this.fb.group({
       title: ['', Validators.required],
@@ -117,6 +123,21 @@ export class PolicyList implements OnInit {
       }
       stateCtrl?.updateValueAndValidity();
     });
+
+    this.searchSubject.pipe(
+      debounceTime(1000),
+      distinctUntilChanged()
+    ).subscribe(query => {
+      if (query && query.trim().length > 0) {
+        this.analyticsService.logSearch(query, this.selectedCategory).subscribe({
+          error: err => console.warn('Search logging failed', err)
+        });
+      }
+    });
+  }
+
+  onSearchChange(newValue: string) {
+    this.searchSubject.next(newValue);
   }
 
   ngOnInit(): void {

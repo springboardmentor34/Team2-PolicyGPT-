@@ -1,28 +1,48 @@
 <div style="max-width: 1000px; margin: 0 auto;">
-  
-  <div class="glass-container" style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center;">
-    <div>
-      <h2 style="color: var(--color-blue); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
-        <i class="material-icons">notifications</i> Notifications
-      </h2>
-      <p style="color: var(--color-text-muted); margin: 0;">Stay updated on your applications, scheme deadlines, and new policies.</p>
+
+  <div class="glass-container"
+    style="margin-bottom: 32px; border-top: 4px solid var(--color-blue); display: flex; justify-content: space-between; align-items: center;">
+    <div style="display: flex; justify-content: space-between; width: 100%; align-items: flex-end;">
+      <div>
+        <h2 style="color: var(--color-blue); margin: 0 0 16px 0; display: flex; align-items: center; gap: 12px;">
+          <i class="material-icons">notifications</i> Notifications
+        </h2>
+        <p style="color: var(--color-text-muted); margin: 0;">Stay updated on your applications, scheme deadlines, and
+          new policies.</p>
+      </div>
+      <button (click)="markAllAsRead()"
+        style="background: none; border: none; color: var(--color-blue); cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 500;">
+        <i class="material-icons">done_all</i> Mark all as read
+      </button>
     </div>
   </div>
 
   <div style="display: flex; flex-direction: column; gap: 12px;">
-    
-    <div *ngIf="notifications.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 40px;" class="glass-container">
-      You have no notifications.
+
+    <div *ngIf="notifications.length === 0" style="text-align: center; color: var(--color-text-muted); padding: 40px;"
+      class="glass-container">
+      <i class="material-icons" style="font-size: 3rem; color: #ccc; margin-bottom: 12px;">notifications_off</i><br>
+      You're all caught up.<br>
+      <span style="font-size: 0.9em; opacity: 0.8;">New policy updates and system alerts will appear here.</span>
     </div>
 
-    <div *ngFor="let notification of notifications" class="glass-container" [ngStyle]="{'border-left': notification.is_read ? '6px solid transparent' : '6px solid var(--color-saffron)'}" style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;" onmouseover="this.style.background='rgba(0,0,0,0.02)'" onmouseout="this.style.background='transparent'">
-      
+    <div *ngFor="let notification of notifications" class="glass-container"
+      [ngStyle]="{'border-left': notification.is_read ? '6px solid transparent' : '6px solid var(--color-saffron)', 'opacity': notification.is_read ? '0.7' : '1'}"
+      style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; transition: background 0.2s;"
+      onmouseover="this.style.background='rgba(0,0,0,0.02)'" onmouseout="this.style.background='transparent'">
+
       <div style="display: flex; align-items: center; gap: 16px;">
         <div style="background: rgba(255,153,51,0.1); padding: 12px; border-radius: 50%;">
-          <i class="material-icons" style="font-size: 1.5rem; color: var(--color-saffron);">notifications_active</i>
+          <i class="material-icons" style="font-size: 1.5rem; color: var(--color-saffron);">
+            {{ notification.type && notification.type.includes('APPROVED') ? 'check_circle'
+            : notification.type && notification.type.includes('REJECTED') ? 'cancel'
+            : notification.type && notification.type.includes('PUBLISHED') ? 'public'
+            : 'notifications_active' }}
+          </i>
         </div>
         <div>
-          <h4 style="margin: 0 0 4px 0; font-size: 1.1rem; color: var(--color-text);" [ngStyle]="{'font-weight': notification.is_read ? '400' : '600'}">
+          <h4 style="margin: 0 0 4px 0; font-size: 1.1rem; color: var(--color-text);"
+            [ngStyle]="{'font-weight': notification.is_read ? '400' : '600'}">
             {{ notification.message }}
           </h4>
           <div style="color: var(--color-text-muted); font-size: 0.9rem;">
@@ -30,7 +50,14 @@
           </div>
         </div>
       </div>
-      
+
+      <!-- Mark as Read Button (only show if unread) -->
+      <button *ngIf="!notification.is_read" (click)="markAsRead(notification.id, notification.is_read)"
+        style="background: transparent; border: 1px solid var(--color-border); padding: 6px 12px; border-radius: 4px; cursor: pointer; color: var(--color-blue); display: flex; align-items: center; gap: 6px;">
+        <i class="material-icons" style="font-size: 1.1rem;">check</i>
+        Mark Read
+      </button>
+
     </div>
 
   </div>

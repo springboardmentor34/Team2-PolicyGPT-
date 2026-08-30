@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PolicyService, Policy } from '../../services/policy.service';
 import { SchemeService, Scheme } from '../../services/scheme.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 export interface EligibilityResult {
   isEligible: boolean;
@@ -38,8 +39,9 @@ export class EligibilityChecker implements OnInit {
 
   constructor(
     private policyService: PolicyService,
-    private schemeService: SchemeService
-  ) {}
+    private schemeService: SchemeService,
+    private analyticsService: AnalyticsService
+  ) { }
 
   ngOnInit(): void {
     this.policyService.getPublishedPolicies().subscribe({
@@ -110,6 +112,10 @@ export class EligibilityChecker implements OnInit {
         matchedPolicyTitle: title,
         benefits: benefits
       };
+
+      this.analyticsService.logEligibilityCheck(this.selectedItemId ? Number(this.selectedItemId) : 0).subscribe({
+        error: err => console.warn('Eligibility logging failed', err)
+      });
 
       this.isEvaluating = false;
     }, 400);

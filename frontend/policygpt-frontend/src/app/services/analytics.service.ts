@@ -70,4 +70,16 @@ export class AnalyticsService {
     getAnalyticsOverview(): Observable<AnalyticsOverviewResponse> {
         return this.http.get<AnalyticsOverviewResponse>(`${this.apiUrl}/overview`);
     }
+
+    logSearch(query: string, filters: string = ''): Observable<any> {
+        return this.http.post(`${this.apiUrl}/log-search`, { query, filters });
+    }
+
+    logEligibilityCheck(entityId: number = 0): Observable<any> {
+        return this.http.post(`${this.apiUrl}/log-eligibility`, { entity_id: entityId });
+    }
+
+    logComparison(): Observable<any> {
+        return this.http.post(`${this.apiUrl}/log-comparison`, {});
+    }
 }

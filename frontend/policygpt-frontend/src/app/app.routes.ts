@@ -12,6 +12,7 @@ import { PolicyApproval } from './pages/policy-approval/policy-approval';
 import { ComparePolicies } from './pages/compare-policies/compare-policies';
 import { EligibilityChecker } from './pages/eligibility-checker/eligibility-checker';
 import { AnalyticsComponent } from './pages/analytics/analytics';
+import { DepartmentAnalyticsComponent } from './pages/department-analytics/department-analytics';
 import { authGuard } from './auth/auth.guard';
 
 export const routes: Routes = [
@@ -26,6 +27,7 @@ export const routes: Routes = [
   { path: 'compare', component: ComparePolicies, canActivate: [authGuard] },
   { path: 'eligibility', component: EligibilityChecker, canActivate: [authGuard] },
   { path: 'analytics', component: AnalyticsComponent, canActivate: [authGuard] },
+  { path: 'department-analytics', component: DepartmentAnalyticsComponent, canActivate: [authGuard] },
   { path: 'notifications', component: Notifications, canActivate: [authGuard] },
   { path: 'feedback', component: Feedback, canActivate: [authGuard] },
   { path: 'reports', component: Reports, canActivate: [authGuard] },

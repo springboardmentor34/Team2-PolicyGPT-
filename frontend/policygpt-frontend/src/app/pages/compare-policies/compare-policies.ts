@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { PolicyService, Policy } from '../../services/policy.service';
+import { AnalyticsService } from '../../services/analytics.service';
 
 @Component({
   selector: 'app-compare-policies',
@@ -15,8 +16,12 @@ export class ComparePolicies implements OnInit {
   selectedPolicyIds: (number | null)[] = [null, null, null, null];
   selectedPolicies: (Policy | null)[] = [null, null, null, null];
   isLoading = false;
+  hasLoggedComparison = false;
 
-  constructor(private policyService: PolicyService) {}
+  constructor(
+    private policyService: PolicyService,
+    private analyticsService: AnalyticsService
+  ) { }
 
   ngOnInit(): void {
     this.fetchPolicies();
@@ -53,11 +58,25 @@ export class ComparePolicies implements OnInit {
     } else {
       this.selectedPolicies[index] = null;
     }
+    this.checkAndLogComparison();
   }
 
   clearSlot(index: number): void {
     this.selectedPolicyIds[index] = null;
     this.selectedPolicies[index] = null;
+    this.checkAndLogComparison();
+  }
+
+  checkAndLogComparison(): void {
+    const selectedCount = this.selectedPolicies.filter(p => p !== null).length;
+    if (selectedCount >= 2 && !this.hasLoggedComparison) {
+      this.analyticsService.logComparison().subscribe({
+        error: err => console.warn('Comparison logging failed', err)
+      });
+      this.hasLoggedComparison = true;
+    } else if (selectedCount < 2) {
+      this.hasLoggedComparison = false;
+    }
   }
 
   hasAnySelected(): boolean {

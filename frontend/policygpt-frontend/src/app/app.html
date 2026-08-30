@@ -28,6 +28,11 @@
         <span>Analytics Dashboard</span>
       </a>
 
+      <a *ngIf="canViewAnalytics" routerLink="/department-analytics" routerLinkActive="active-link" class="nav-link">
+        <i class="material-icons" style="color: var(--color-blue);">corporate_fare</i>
+        <span>Department Analytics</span>
+      </a>
+
       <a routerLink="/schemes" routerLinkActive="active-link" class="nav-link">
         <i class="material-icons" style="color: var(--color-green);">card_giftcard</i>
         <span>Schemes</span>
@@ -43,9 +48,15 @@
         <span>Compare</span>
       </a>
 
-      <a routerLink="/notifications" routerLinkActive="active-link" class="nav-link">
-        <i class="material-icons" style="color: var(--color-saffron);">notifications</i>
-        <span>Notifications</span>
+      <a routerLink="/notifications" routerLinkActive="active-link" class="nav-link" style="position: relative;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <i class="material-icons" style="color: var(--color-saffron);">notifications</i>
+          <span>Notifications</span>
+        </div>
+        <span *ngIf="unreadNotificationCount > 0"
+          style="background-color: #d9534f; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.75rem; margin-left: auto;">
+          {{ unreadNotificationCount }}
+        </span>
       </a>
 
       <a routerLink="/reports" routerLinkActive="active-link" class="nav-link">

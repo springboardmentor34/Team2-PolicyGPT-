@@ -1,0 +1,101 @@
+<div class="analytics-container" style="max-width: 1200px; margin: 0 auto;">
+
+    <div class="header-section"
+        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <div>
+            <h2 style="color: var(--color-blue); margin: 0 0 8px 0; display: flex; align-items: center; gap: 12px;">
+                <i class="material-icons">corporate_fare</i> Department Analytics
+            </h2>
+            <p style="color: var(--color-text-muted); margin: 0;">Analyze policy implementations across government
+                departments.</p>
+        </div>
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <i class="material-icons" style="color: var(--color-saffron);">filter_alt</i>
+            <select class="fog-input" style="padding: 8px 16px; min-width: 200px;" [(ngModel)]="selectedDepartment"
+                (change)="onDepartmentChange()" [disabled]="loading || departments.length === 0">
+                <option *ngFor="let dept of departments" [value]="dept">{{ dept }}</option>
+            </select>
+        </div>
+    </div>
+
+    <div *ngIf="error" style="padding: 24px; text-align: center; color: #d9534f;" class="glass-container">
+        <i class="material-icons" style="font-size: 3rem; margin-bottom: 12px;">error_outline</i><br>
+        {{ error }}
+    </div>
+
+    <div *ngIf="loading"
+        style="display: flex; justify-content: center; align-items: center; height: 300px; color: var(--color-blue);">
+        <div style="font-size: 1.2rem;">Loading data...</div>
+    </div>
+
+    <div *ngIf="!loading && !error && analyticsData" style="display: flex; flex-direction: column; gap: 24px;">
+
+        <!-- Empty State -->
+        <div *ngIf="analyticsData.kpis.total_policies === 0"
+            style="padding: 60px; text-align: center; color: var(--color-text-muted);" class="glass-container">
+            <i class="material-icons" style="font-size: 3rem; margin-bottom: 12px; opacity: 0.5;">bar_chart</i><br>
+            No analytics data available for this department yet.
+        </div>
+
+        <!-- KPIs -->
+        <div class="kpi-grid" *ngIf="analyticsData.kpis.total_policies > 0">
+            <div class="glass-container kpi-card">
+                <div class="kpi-title">Total Policies</div>
+                <div class="kpi-value text-blue">{{ analyticsData.kpis.total_policies }}</div>
+            </div>
+            <div class="glass-container kpi-card">
+                <div class="kpi-title">Approved</div>
+                <div class="kpi-value text-green">{{ analyticsData.kpis.approved }}</div>
+            </div>
+            <div class="glass-container kpi-card">
+                <div class="kpi-title">Pending</div>
+                <div class="kpi-value text-yellow">{{ analyticsData.kpis.pending_approval }}</div>
+            </div>
+            <div class="glass-container kpi-card">
+                <div class="kpi-title">Rejected</div>
+                <div class="kpi-value text-red">{{ analyticsData.kpis.rejected }}</div>
+            </div>
+            <div class="glass-container kpi-card">
+                <div class="kpi-title">Published</div>
+                <div class="kpi-value text-blue">{{ analyticsData.kpis.published }}</div>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <div class="charts-grid" *ngIf="analyticsData.kpis.total_policies > 0">
+            <div class="glass-container chart-card">
+                <h3 class="chart-title"><i class="material-icons icon-yellow">pie_chart</i> Policy Status Distribution
+                </h3>
+                <div class="chart-wrapper">
+                    <canvas #statusChart></canvas>
+                </div>
+            </div>
+
+            <div class="glass-container chart-card">
+                <h3 class="chart-title"><i class="material-icons text-blue">trending_up</i> Policy Creation Trend</h3>
+                <div class="chart-wrapper">
+                    <canvas #creationChart></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="charts-grid" *ngIf="analyticsData.kpis.total_policies > 0">
+            <!-- Policy Categories -->
+            <div class="glass-container chart-card" *ngIf="analyticsData.policy_category_distribution.length > 0">
+                <h3 class="chart-title"><i class="material-icons text-blue">bar_chart</i> Policy Categories</h3>
+                <div class="chart-wrapper">
+                    <canvas #policyCategoryChart></canvas>
+                </div>
+            </div>
+
+            <!-- Scheme Categories -->
+            <div class="glass-container chart-card" *ngIf="analyticsData.scheme_category_distribution.length > 0">
+                <h3 class="chart-title"><i class="material-icons text-green">bar_chart</i> Scheme Categories</h3>
+                <div class="chart-wrapper">
+                    <canvas #schemeCategoryChart></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

@@ -15,6 +15,7 @@ from app.models.audit_log import AuditLog
 
 
 from app.models.notification import Notification
+from app.models.user import User
 
 def log_workflow_action(
     db: Session,
@@ -23,7 +24,8 @@ def log_workflow_action(
     action: str,
     old_status: str | None,
     new_status: str,
-    comment: str | None = None
+    comment: str | None = None,
+    creator_id: int | None = None
 ):
     audit_record = AuditLog(
         user_id=user_id,
@@ -37,18 +39,32 @@ def log_workflow_action(
     )
     db.add(audit_record)
 
-    # Create user-facing Notification record
+    # Determine whom to notify based on the action
+    target_users = []
+    
+    if action == "POLICY_SUBMITTED":
+        # Notify all administrators
+        admins = db.query(User).filter(User.role == "administrator").all()
+        target_users = [admin.id for admin in admins]
+    elif action in ["POLICY_APPROVED", "POLICY_REJECTED", "POLICY_PUBLISHED"]:
+        # Notify the creator
+        if creator_id:
+            target_users = [creator_id]
+        
     action_label = action.replace("POLICY_", "").replace("_", " ").title()
     msg = f"Policy #{policy_id}: Action '{action_label}' status updated to {new_status}."
     if comment:
         msg += f" Note: {comment}"
-
-    notif = Notification(
-        user_id=user_id,
-        message=msg,
-        type=action
-    )
-    db.add(notif)
+        
+    for target_user_id in target_users:
+        if target_user_id != user_id:  # Do not notify themselves
+            notif = Notification(
+                user_id=target_user_id,
+                message=msg,
+                type=action
+            )
+            db.add(notif)
+            
     db.commit()
 
 
@@ -169,7 +185,8 @@ def submit_policy_service(db: Session, policy_id: int, user_id: int):
         policy_id=policy_id,
         action="POLICY_SUBMITTED",
         old_status=old_status,
-        new_status="PENDING_APPROVAL"
+        new_status="PENDING_APPROVAL",
+        creator_id=policy.created_by
     )
     return policy
 
@@ -207,7 +224,8 @@ def approve_policy_service(db: Session, policy_id: int, reviewer_id: int, commen
         action="POLICY_APPROVED",
         old_status=old_status,
         new_status="APPROVED",
-        comment=comment
+        comment=comment,
+        creator_id=policy.created_by
     )
     return policy
 
@@ -245,7 +263,8 @@ def reject_policy_service(db: Session, policy_id: int, reviewer_id: int, comment
         action="POLICY_REJECTED",
         old_status=old_status,
         new_status="REJECTED",
-        comment=comment
+        comment=comment,
+        creator_id=policy.created_by
     )
     return policy
 
@@ -274,7 +293,8 @@ def publish_policy_service(db: Session, policy_id: int, reviewer_id: int):
         policy_id=policy_id,
         action="POLICY_PUBLISHED",
         old_status=old_status,
-        new_status="PUBLISHED"
+        new_status="PUBLISHED",
+        creator_id=policy.created_by
     )
     return policy
 

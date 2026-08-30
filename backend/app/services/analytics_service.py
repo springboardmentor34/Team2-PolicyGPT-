@@ -12,7 +12,8 @@ from app.models.feedback import Feedback
 from app.models.notification import Notification
 from app.schemas.analytics import (
     KeyMetrics, TrendPoint, PolicyStatusDistribution, 
-    CategoryDistribution, UsageActivity, AIInsight, AnalyticsOverviewResponse
+    CategoryDistribution, UsageActivity, AIInsight, AnalyticsOverviewResponse,
+    DepartmentAnalyticsResponse, DepartmentKPIs
 )
 
 class AnalyticsService:
@@ -147,4 +148,71 @@ class AnalyticsService:
             observation=obs,
             anomaly=anomaly,
             recommendation=rec
+        )
+
+    @staticmethod
+    def get_departments_service(db: Session) -> list[str]:
+        departments = db.query(Policy.department).filter(Policy.department != None).distinct().all()
+        return [dept[0] for dept in departments if dept[0]]
+
+    @staticmethod
+    def get_department_analytics_service(db: Session, department_name: str) -> DepartmentAnalyticsResponse:
+        # Base query for this department's policies
+        dept_policies = db.query(Policy).filter(func.lower(Policy.department) == department_name.lower())
+        total_policies = dept_policies.count()
+        
+        # Policy Status Distribution
+        draft = dept_policies.filter(func.upper(Policy.status) == 'DRAFT').count()
+        pending = dept_policies.filter(func.upper(Policy.status) == 'PENDING_APPROVAL').count()
+        approved = dept_policies.filter(func.upper(Policy.status) == 'APPROVED').count()
+        rejected = dept_policies.filter(func.upper(Policy.status) == 'REJECTED').count()
+        published = dept_policies.filter(func.upper(Policy.status) == 'PUBLISHED').count()
+
+        status_dist = PolicyStatusDistribution(
+            draft=draft,
+            pending_approval=pending,
+            approved=approved,
+            rejected=rejected,
+            published=published
+        )
+
+        kpis = DepartmentKPIs(
+            total_policies=total_policies,
+            draft=draft,
+            pending_approval=pending,
+            approved=approved,
+            rejected=rejected,
+            published=published,
+            total_schemes=db.query(Scheme).filter(func.lower(Scheme.ministry_department) == department_name.lower()).count() if hasattr(Scheme, 'ministry_department') else 0
+        )
+
+        # Policy Categories
+        policy_cats = db.query(Policy.category, func.count(Policy.id)).filter(func.lower(Policy.department) == department_name.lower()).group_by(Policy.category).all()
+        policy_cat_list = [CategoryDistribution(category=c if c else "Uncategorized", count=count) for c, count in policy_cats]
+
+        # Scheme Categories (Assuming schemes have ministry_department)
+        scheme_cats = []
+        if hasattr(Scheme, 'ministry_department'):
+            sc_res = db.query(Scheme.category, func.count(Scheme.id)).filter(func.lower(Scheme.ministry_department) == department_name.lower()).group_by(Scheme.category).all()
+            scheme_cats = [CategoryDistribution(category=c if c else "Uncategorized", count=count) for c, count in sc_res]
+
+        # Creation Trend
+        trend_list = []
+        try:
+            trend_data = db.query(
+                func.date(Policy.created_at).label('creation_date'),
+                func.count(Policy.id)
+            ).filter(func.lower(Policy.department) == department_name.lower()).group_by(func.date(Policy.created_at)).all()
+            
+            trend_list = [TrendPoint(date=str(row[0]), count=row[1]) for row in trend_data[-7:]]
+        except Exception:
+            pass
+
+        return DepartmentAnalyticsResponse(
+            department=department_name,
+            kpis=kpis,
+            policy_status_distribution=status_dist,
+            policy_creation_trend=trend_list,
+            policy_category_distribution=policy_cat_list,
+            scheme_category_distribution=scheme_cats
         )

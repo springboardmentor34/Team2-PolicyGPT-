@@ -27,7 +27,7 @@
     style="margin-bottom: 28px; padding: 18px 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
     <div style="display: flex; align-items: center; gap: 12px; flex: 1; min-width: 280px;">
       <i class="material-icons" style="color: var(--color-saffron); font-size: 1.8rem;">search</i>
-      <input type="text" class="fog-input" [(ngModel)]="searchQuery"
+      <input type="text" class="fog-input" [(ngModel)]="searchQuery" (ngModelChange)="onSearchChange($event)"
         placeholder="Search policies by keyword, department, category, or title..." style="padding: 12px 16px;">
     </div>
     <div style="display: flex; align-items: center; gap: 12px;">
