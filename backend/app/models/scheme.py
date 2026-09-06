@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, DateTime
 from sqlalchemy.orm import relationship
 from app.database.base import Base
@@ -16,6 +16,6 @@ class Scheme(Base):
     status = Column(String, nullable=True)
     eligibility_criteria = Column(Text, nullable=True)
     benefits = Column(Text, nullable=True)
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     eligibility_rules = relationship("EligibilityRule", back_populates="scheme")

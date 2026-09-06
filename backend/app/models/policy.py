@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Text, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 from app.database.base import Base
@@ -19,8 +19,8 @@ class Policy(Base):
     reviewed_by = Column(Integer, ForeignKey("users.id"), nullable=True)
     review_comment = Column(Text, nullable=True)
     
-    created_at = Column(DateTime, default=lambda: datetime.now(UTC))
-    updated_at = Column(DateTime, default=lambda: datetime.now(UTC), onupdate=lambda: datetime.now(UTC))
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
     reviewed_at = Column(DateTime, nullable=True)
     published_at = Column(DateTime, nullable=True)
 

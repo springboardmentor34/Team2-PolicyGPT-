@@ -7,7 +7,6 @@ try:
         class DummyAbout:
             __version__ = getattr(bcrypt, "__version__", "4.0.0")
         bcrypt.__about__ = DummyAbout()
-    
     _orig_hashpw = bcrypt.hashpw
     def _patched_hashpw(password, salt):
         if isinstance(password, str):
@@ -44,7 +43,7 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", "1440
 # ---------------------------------------------------------------------------
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto", bcrypt__default_rounds=10)
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/swagger-login")
 
 
 def hash_password(password: str) -> str:
@@ -108,7 +107,7 @@ def get_current_user(
     return user
 
 
-oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/auth/login", auto_error=False)
+oauth2_scheme_optional = OAuth2PasswordBearer(tokenUrl="/auth/swagger-login", auto_error=False)
 
 
 def get_optional_current_user(
@@ -126,4 +125,4 @@ def get_optional_current_user(
     except Exception:
         pass
     return None
-
+

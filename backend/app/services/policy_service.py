@@ -1,4 +1,4 @@
-from datetime import datetime, UTC
+from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 from fastapi import HTTPException, status
 
@@ -134,7 +134,7 @@ def update_policy_service(db: Session, policy_id: int, policy: PolicyUpdate, use
     for key, value in update_data.items():
         setattr(db_policy, key, value)
     
-    db_policy.updated_at = datetime.now(UTC)
+    db_policy.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(db_policy)
     return db_policy
@@ -175,7 +175,7 @@ def submit_policy_service(db: Session, policy_id: int, user_id: int):
         )
         
     policy.status = "PENDING_APPROVAL"
-    policy.updated_at = datetime.now(UTC)
+    policy.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(policy)
     
@@ -211,9 +211,9 @@ def approve_policy_service(db: Session, policy_id: int, reviewer_id: int, commen
         
     policy.status = "APPROVED"
     policy.reviewed_by = reviewer_id
-    policy.reviewed_at = datetime.now(UTC)
+    policy.reviewed_at = datetime.now(timezone.utc)
     policy.review_comment = comment
-    policy.updated_at = datetime.now(UTC)
+    policy.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(policy)
     
@@ -250,9 +250,9 @@ def reject_policy_service(db: Session, policy_id: int, reviewer_id: int, comment
         
     policy.status = "REJECTED"
     policy.reviewed_by = reviewer_id
-    policy.reviewed_at = datetime.now(UTC)
+    policy.reviewed_at = datetime.now(timezone.utc)
     policy.review_comment = comment
-    policy.updated_at = datetime.now(UTC)
+    policy.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(policy)
     
@@ -282,8 +282,8 @@ def publish_policy_service(db: Session, policy_id: int, reviewer_id: int):
         )
         
     policy.status = "PUBLISHED"
-    policy.published_at = datetime.now(UTC)
-    policy.updated_at = datetime.now(UTC)
+    policy.published_at = datetime.now(timezone.utc)
+    policy.updated_at = datetime.now(timezone.utc)
     db.commit()
     db.refresh(policy)
     
